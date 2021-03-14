@@ -1,3 +1,4 @@
+import * as pgql from '../src/pgql'
 import {
   OracleConnection,
   OracleConfig,
@@ -14,6 +15,22 @@ const testDbConfig: OracleConfig = new OracleConfigBuilder()
   .user(process.env.TEST_DB_USER || 'test_user')
   .password(process.env.TEST_DB_PASSWORD || 'welcome1')
   .build()
+
+const oraclePoolConfig: pgql.IOraclePoolConfig = {
+  poolName: 'pool2',
+  initialPoolSize: 1,
+  minPoolSize: 1,
+  maxPoolSize: 1,
+  timeoutCheckInteraval: 5,
+  inactiveConnectionTimeout: 60,
+}
+
+export const oracleDatabaseConfig: pgql.IOracleDatabaseConfig = {
+  jdbcUrl: testDbConfig.url,
+  userName: testDbConfig.user,
+  password: testDbConfig.password,
+  databasePoolConfig: oraclePoolConfig
+}
 
 export const connManager: OracleConnectionManager = OracleConnectionManager.getInstance(
   testDbConfig,
