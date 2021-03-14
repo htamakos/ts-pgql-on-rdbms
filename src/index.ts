@@ -5,7 +5,7 @@ export {
   OracleConfigBuilder,
   OracleConnectionManager,
 } from "./Oracle";
-export { PgqlConnection } from "./PgqlConnecton";
+export { PgqlConnection } from "./PgqlConnection";
 export { PgqlPreparedStatement } from "./PgqlPreparedStatement";
 export { PgqlResultSet } from "./PgqlResultSet";
 export { PgqlStatement } from "./PgqlStatement";

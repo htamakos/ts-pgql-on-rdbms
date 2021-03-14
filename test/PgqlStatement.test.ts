@@ -1,4 +1,4 @@
-import { PgqlConnection } from "../src/PgqlConnecton";
+import { PgqlConnection } from "../src/PgqlConnection";
 import { PgqlResultSet } from "../src/PgqlResultSet";
 import {PgqlStatement} from "../src/PgqlStatement";
 import { tryWith } from "../src/Resource";

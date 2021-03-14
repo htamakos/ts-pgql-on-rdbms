@@ -1,6 +1,6 @@
 import { OracleConnection } from "../src/Oracle";
 
-import { PgqlConnection } from "../src/PgqlConnecton";
+import { PgqlConnection } from "../src/PgqlConnection";
 import { PgqlPreparedStatement } from "../src/PgqlPreparedStatement";
 import { PgqlResultSet } from "../src/PgqlResultSet";
 import { tryWith } from "../src/Resource";

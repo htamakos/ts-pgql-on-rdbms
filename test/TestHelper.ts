@@ -4,7 +4,7 @@ import {
   OracleConfigBuilder,
   OracleConnectionManager,
 } from "../src/Oracle";
-import { PgqlConnection } from "../src/PgqlConnecton";
+import { PgqlConnection } from "../src/PgqlConnection";
 import { PgqlPreparedStatement } from "../src/PgqlPreparedStatement";
 import { PgqlStatement } from "../src/PgqlStatement";
 import { tryWith } from "../src/Resource";
