@@ -11,6 +11,7 @@ export interface JavaPgqlResultSet extends AutoClosable, AutoCloseableSync {
 
   printSync(): JavaPgqlResultSet
   nextSync(): boolean
+  beforeFirstSync(): boolean
 
   getLongSync(columnName: string): number
   getDoubleSync(columnName: string): number
@@ -45,6 +46,10 @@ export class PgqlResultSet implements AutoClosable, AutoCloseableSync {
 
   next(): boolean {
     return this.internalObj.nextSync()
+  }
+
+  beforeFirst(): boolean {
+    return this.internalObj.beforeFirstSync()
   }
 
   getLong(columnName: string): number | null {
