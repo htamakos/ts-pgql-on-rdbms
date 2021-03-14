@@ -5,7 +5,7 @@ export interface JavaPgqlResultSetMetaDataImpl {
 
 export class PgqlResultSetMetaDataImpl {
   private readonly internalObj: JavaPgqlResultSetMetaDataImpl
-  constructor(readonly meta: JavaPgqlResultSetMetaDataImpl) {
+  constructor(meta: JavaPgqlResultSetMetaDataImpl) {
     this.internalObj = meta
   }
 

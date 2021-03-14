@@ -52,7 +52,7 @@ export class PgqlPreparedStatement implements AutoClosable, AutoCloseableSync {
   private static TIMESTAMP_FORMAT: string = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
   private readonly internalObj: JavaPgqlPreparedStatement
 
-  constructor(readonly pstmt: JavaPgqlPreparedStatement) {
+  constructor(pstmt: JavaPgqlPreparedStatement) {
     this.internalObj = pstmt
   }
 

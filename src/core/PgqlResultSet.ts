@@ -28,7 +28,7 @@ export interface JavaPgqlResultSet extends AutoClosable, AutoCloseableSync {
 export class PgqlResultSet implements AutoClosable, AutoCloseableSync {
   private readonly internalObj: JavaPgqlResultSet
 
-  constructor(readonly rs: JavaPgqlResultSet) {
+  constructor(rs: JavaPgqlResultSet) {
     this.internalObj = rs
   }
 

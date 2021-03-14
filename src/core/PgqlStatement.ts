@@ -36,7 +36,7 @@ export interface JavaPgqlStatement extends AutoClosable, AutoCloseableSync {
 export class PgqlStatement implements AutoClosable, AutoCloseableSync {
   private readonly internalObj: JavaPgqlStatement
 
-  constructor(readonly stmt: JavaPgqlStatement) {
+  constructor(stmt: JavaPgqlStatement) {
     this.internalObj = stmt
   }
 
