@@ -1,4 +1,4 @@
-import javaNodeApi from '../src/JavaApi'
+import javaNodeApi from './JavaApi'
 import { AutoClosable, AutoCloseableSync } from './Resource'
 
 const PoolDataSourceFactory = javaNodeApi.import(

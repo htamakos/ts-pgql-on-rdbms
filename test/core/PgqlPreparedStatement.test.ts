@@ -1,9 +1,9 @@
-import { PgqlConnection } from '../src/PgqlConnection'
-import { PgqlPreparedStatement } from '../src/PgqlPreparedStatement'
-import { PgqlResultSet } from '../src/PgqlResultSet'
-import { tryWith } from '../src/Resource'
+import { PgqlConnection } from '../../src/core/PgqlConnection'
+import { PgqlPreparedStatement } from '../../src/core/PgqlPreparedStatement'
+import { PgqlResultSet } from '../../src/core/PgqlResultSet'
+import { tryWith } from '../../src/core/Resource'
 
-import { createGraph, dropGraph, executeQueryTest } from './TestHelper'
+import { createGraph, dropGraph, executeQueryTest } from '../TestHelper'
 
 const TEST_GRAPH_NAME: string = 'TEST_GRAPH4'
 

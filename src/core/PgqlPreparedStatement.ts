@@ -6,7 +6,7 @@ import {
 } from './JavaStandardType'
 import { JavaPgqlResultSet, PgqlResultSet } from './PgqlResultSet'
 import { AutoClosable, AutoCloseableSync } from './Resource'
-import javaNodeApi from '../src/JavaApi'
+import javaNodeApi from './JavaApi'
 
 export interface JavaPgqlPreparedStatement
   extends AutoClosable,

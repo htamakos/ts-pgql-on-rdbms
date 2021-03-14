@@ -1,4 +1,4 @@
-import javaNodeApi from '../src/JavaApi'
+import javaNodeApi from './JavaApi'
 
 export interface LocalDateTime {
   toStringSync(): string

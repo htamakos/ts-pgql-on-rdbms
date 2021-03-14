@@ -1,11 +1,11 @@
-import { OracleConnection } from '../src/Oracle'
+import { OracleConnection } from '../../src/core/Oracle'
 
-import { PgqlConnection } from '../src/PgqlConnection'
-import { PgqlPreparedStatement } from '../src/PgqlPreparedStatement'
-import { PgqlResultSet } from '../src/PgqlResultSet'
-import { tryWith } from '../src/Resource'
+import { PgqlConnection } from '../../src/core/PgqlConnection'
+import { PgqlPreparedStatement } from '../../src/core/PgqlPreparedStatement'
+import { PgqlResultSet } from '../../src/core/PgqlResultSet'
+import { tryWith } from '../../src/core/Resource'
 
-import { connManager, createGraph, dropGraph } from './TestHelper'
+import { connManager, createGraph, dropGraph } from '../TestHelper'
 
 const TEST_GRAPH_NAME: string = 'TEST_GRAPH2'
 

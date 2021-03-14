@@ -3,11 +3,11 @@ import {
   OracleConfig,
   OracleConfigBuilder,
   OracleConnectionManager,
-} from '../src/Oracle'
-import { PgqlConnection } from '../src/PgqlConnection'
-import { PgqlPreparedStatement } from '../src/PgqlPreparedStatement'
-import { PgqlStatement } from '../src/PgqlStatement'
-import { tryWith } from '../src/Resource'
+} from '../src/core/Oracle'
+import { PgqlConnection } from '../src/core/PgqlConnection'
+import { PgqlPreparedStatement } from '../src/core/PgqlPreparedStatement'
+import { PgqlStatement } from '../src/core/PgqlStatement'
+import { tryWith } from '../src/core/Resource'
 
 const testDbConfig: OracleConfig = new OracleConfigBuilder()
   .url(process.env.TEST_JDBC_URL || 'jdbc:oracle:thin:@localhost:21521/pdb1')

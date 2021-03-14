@@ -1,4 +1,4 @@
-import { connManager } from './TestHelper'
+import { connManager } from '../TestHelper'
 
 describe('OracleConnectionManager', (): void => {
   test('should get a OracleConnection', async (): Promise<void> => {

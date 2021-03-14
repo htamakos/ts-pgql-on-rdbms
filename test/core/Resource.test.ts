@@ -1,6 +1,6 @@
-import { connManager } from './TestHelper'
-import { tryWith, tryWithSync } from '../src/Resource'
-import { OracleConnection } from '../src/Oracle'
+import { connManager } from '../TestHelper'
+import { tryWith, tryWithSync } from '../../src/core/Resource'
+import { OracleConnection } from '../../src/core/Oracle'
 
 describe('tryWith', (): void => {
   test('should close AutoClosable resources', async (): Promise<void> => {
