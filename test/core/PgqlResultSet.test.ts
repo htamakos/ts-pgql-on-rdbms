@@ -1,26 +1,13 @@
-import { OracleConnection } from '../../src/core/Oracle'
+import { PgDatatypeConstants } from '../../src/core/PgDatatypeConstants'
 
 import { PgqlConnection } from '../../src/core/PgqlConnection'
 import { PgqlPreparedStatement } from '../../src/core/PgqlPreparedStatement'
 import { PgqlResultSet } from '../../src/core/PgqlResultSet'
 import { tryWith } from '../../src/core/Resource'
 
-import { connManager, createGraph, dropGraph } from '../TestHelper'
+import { createGraph, dropGraph, executeQueryTest } from '../TestHelper'
 
 const TEST_GRAPH_NAME: string = 'TEST_GRAPH2'
-
-async function executeQueryTest(
-  func: (pgqlConn: PgqlConnection) => Promise<void>,
-) {
-  const conn: OracleConnection = await connManager.getConnection()
-  conn.setAutoCommit(false)
-
-  await tryWith(conn, async (conn: OracleConnection) => {
-    // create PGQL Connection
-    const pgqlConn: PgqlConnection = PgqlConnection.getConnection(conn)
-    await func(pgqlConn)
-  })
-}
 
 describe('PgqlResultSet', (): void => {
   beforeAll(() => createGraph(TEST_GRAPH_NAME))
@@ -163,6 +150,63 @@ describe('PgqlResultSet', (): void => {
             expect(rs.getBoolean(booleanPropName)).toBeNull()
             expect(rs.getTimestamp(timestampPropName)).toBeNull()
           }
+        })
+      })
+    })
+  })
+
+  test('should get ResultSet metadata', async (): Promise<void> => {
+    await executeQueryTest(async (pgqlConn: PgqlConnection) => {
+      // create sample SELECT PGQL PreparedStatement
+      const intPropName: string = 'INT_VALUE'
+      const intPropValue: number = 1
+      const longPropName: string = 'LONG_VALUE'
+      const longPropValue: number = 2
+      const doublePropName: string = 'DOUBLE_VALUE'
+      const doublePropValue: number = 0.1
+      const floatPropName: string = 'FLOAT_VALUE'
+      const floatPropValue: number = 10
+      const stringPropName: string = 'STR_VALUE'
+      const stringPropValue: string = 'HOGEHOGE'
+      const booleanPropName: string = 'BOOLEAN_VALUE'
+      const booleanPropValue: boolean = true
+      const timestampPropName: string = 'TIMESTAMP_VALUE'
+      const timestampStringValue: string = '2018-12-15 10:10:00+00:00'
+
+      const pstmt: PgqlPreparedStatement = await pgqlConn.prepareStatement(`
+        SELECT
+            cast(${intPropValue} as int) as ${intPropName},
+            cast(${longPropValue} as long) as ${longPropName},
+            ${doublePropValue} as ${doublePropName},
+            cast(${floatPropValue} as float) as ${floatPropName},
+            '${stringPropValue}' as ${stringPropName},
+            ${booleanPropValue} as ${booleanPropName},
+            timestamp '${timestampStringValue}' as ${timestampPropName}
+        FROM MATCH (n) ON ${TEST_GRAPH_NAME}
+        LIMIT 1
+      `)
+
+      // execute sample PreparedStatement
+      await tryWith(pstmt, async (pstmt: PgqlPreparedStatement) => {
+        const rs: PgqlResultSet = await pstmt.executeQuery()
+
+        // get ResultSet
+        await tryWith(rs, async (rs: PgqlResultSet) => {
+          rs.next()
+
+          const index_and_expect_types: Array<[number, number]> = [
+            [1, PgDatatypeConstants.TYPE_DT_INTEGER],
+            [2, PgDatatypeConstants.TYPE_DT_LONG],
+            [3, PgDatatypeConstants.TYPE_DT_DOUBLE],
+            [4, PgDatatypeConstants.TYPE_DT_FLOAT],
+            [5, PgDatatypeConstants.TYPE_DT_STRING],
+            [6, PgDatatypeConstants.TYPE_DT_BOOL],
+            [7, PgDatatypeConstants.TYPE_DT_DATE],
+          ]
+
+          index_and_expect_types.forEach((t) => {
+            expect(rs.getValueType(t[0])).toBe(t[1])
+          })
         })
       })
     })

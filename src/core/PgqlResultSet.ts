@@ -1,5 +1,9 @@
 import { AutoClosable, AutoCloseableSync } from './Resource'
 import { LocalDateTime } from './JavaStandardType'
+import {
+  JavaPgqlResultSetMetaDataImpl,
+  PgqlResultSetMetaDataImpl,
+} from './PgqlResultSetMetaDataImpl'
 
 export interface JavaPgqlResultSet extends AutoClosable, AutoCloseableSync {
   closeSync(): void
@@ -15,6 +19,9 @@ export interface JavaPgqlResultSet extends AutoClosable, AutoCloseableSync {
   getIntegerSync(columnName: string): number
   getBooleanSync(columnName: string): boolean
   getTimestampSync(columnName: string): LocalDateTime
+
+  getMetaDataSync(): JavaPgqlResultSetMetaDataImpl
+  getValueTypeSync(elementIdx: number): number
 }
 
 export class PgqlResultSet implements AutoClosable, AutoCloseableSync {
@@ -105,5 +112,13 @@ export class PgqlResultSet implements AutoClosable, AutoCloseableSync {
     } else {
       return null
     }
+  }
+
+  getMetaData(): PgqlResultSetMetaDataImpl {
+    return new PgqlResultSetMetaDataImpl(this.internalObj.getMetaDataSync())
+  }
+
+  getValueType(elementIdx: number): number {
+    return this.internalObj.getValueTypeSync(elementIdx)
   }
 }
