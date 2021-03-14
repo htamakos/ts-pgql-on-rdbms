@@ -1,23 +1,29 @@
 export interface AutoCloseableSync {
-    closeSync(): void;
+  closeSync(): void
 }
 
 export interface AutoClosable {
-    close(): Promise<void>;
+  close(): Promise<void>
 }
 
-export function tryWithSync<T extends AutoCloseableSync>(resource: T, func: (resource: T) => void) {
-    try {
-        func(resource);
-    } finally {
-        resource.closeSync();
-    }
+export function tryWithSync<T extends AutoCloseableSync>(
+  resource: T,
+  func: (resource: T) => void,
+) {
+  try {
+    func(resource)
+  } finally {
+    resource.closeSync()
+  }
 }
 
-export async function tryWith<T extends AutoClosable>(resource: T, func: (resource: T) => Promise<void>) {
-    try {
-        await func(resource)
-    } finally {
-        await resource.close();
-    }
+export async function tryWith<T extends AutoClosable>(
+  resource: T,
+  func: (resource: T) => Promise<void>,
+) {
+  try {
+    await func(resource)
+  } finally {
+    await resource.close()
+  }
 }

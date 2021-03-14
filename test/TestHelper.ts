@@ -3,44 +3,46 @@ import {
   OracleConfig,
   OracleConfigBuilder,
   OracleConnectionManager,
-} from "../src/Oracle";
-import { PgqlConnection } from "../src/PgqlConnection";
-import { PgqlPreparedStatement } from "../src/PgqlPreparedStatement";
-import { PgqlStatement } from "../src/PgqlStatement";
-import { tryWith } from "../src/Resource";
+} from '../src/Oracle'
+import { PgqlConnection } from '../src/PgqlConnection'
+import { PgqlPreparedStatement } from '../src/PgqlPreparedStatement'
+import { PgqlStatement } from '../src/PgqlStatement'
+import { tryWith } from '../src/Resource'
 
 const testDbConfig: OracleConfig = new OracleConfigBuilder()
-  .url(process.env.TEST_JDBC_URL || "jdbc:oracle:thin:@localhost:21521/pdb1")
-  .user(process.env.TEST_DB_USER || "test_user")
-  .password(process.env.TEST_DB_PASSWORD || "welcome1")
-  .build();
+  .url(process.env.TEST_JDBC_URL || 'jdbc:oracle:thin:@localhost:21521/pdb1')
+  .user(process.env.TEST_DB_USER || 'test_user')
+  .password(process.env.TEST_DB_PASSWORD || 'welcome1')
+  .build()
 
 export const connManager: OracleConnectionManager = OracleConnectionManager.getInstance(
-  testDbConfig
-);
+  testDbConfig,
+)
 
 export async function createGraph(graphName: string): Promise<void> {
-  const conn: OracleConnection = await connManager.getConnection();
-  conn.setAutoCommit(false);
+  const conn: OracleConnection = await connManager.getConnection()
+  conn.setAutoCommit(false)
 
   await tryWith(conn, async (conn: OracleConnection) => {
     // create PGQL Connection
-    const pgqlConn: PgqlConnection = PgqlConnection.getConnection(conn);
-    const stmt: PgqlStatement = await pgqlConn.createStatement();
+    const pgqlConn: PgqlConnection = PgqlConnection.getConnection(conn)
+    const stmt: PgqlStatement = await pgqlConn.createStatement()
 
     // create a Graph for test
     await tryWith(stmt, async (stmt: PgqlStatement) => {
       await stmt.execute(`
         CREATE PROPERTY GRAPH ${graphName}
-      `);
-    });
+      `)
+    })
 
     // For prevent occuring bag related to TTP with PARALLEL
-    ["XDE$", "XDG$", "XQD$", "XQE$", "XQG$", "XQV$", "XSE$", "XSG$"].forEach(async postFix => {
-      await conn.executeStatement(`
+    ;['XDE$', 'XDG$', 'XQD$', 'XQE$', 'XQG$', 'XQV$', 'XSE$', 'XSG$'].forEach(
+      async (postFix) => {
+        await conn.executeStatement(`
         ALTER INDEX ${graphName}${postFix} noparallel
-      `);
-    });
+      `)
+      },
+    )
 
     // insert Data
     const insertPstmt: PgqlPreparedStatement = await pgqlConn.prepareStatement(`
@@ -75,50 +77,50 @@ export async function createGraph(graphName: string): Promise<void> {
                 e.BOOLEAN_PROP = true,
                 e.TIMESTAMP_PROP = timestamp '2021-03-14 10:00:00'
             )
-    `);
+    `)
     await tryWith(insertPstmt, async (insertPstmt: PgqlPreparedStatement) => {
-      const parallelDop = 0;
-      const dynamicSamplingLevel = 2;
-      const matchOptions = "";
-      const options = "";
+      const parallelDop = 0
+      const dynamicSamplingLevel = 2
+      const matchOptions = ''
+      const options = ''
 
       // test data
       await insertPstmt.executeWithOptions(
         parallelDop,
         dynamicSamplingLevel,
         matchOptions,
-        options
-      );
-    });
-  });
+        options,
+      )
+    })
+  })
 }
 
 export async function dropGraph(graphName: string): Promise<void> {
-  const conn: OracleConnection = await connManager.getConnection();
-  conn.setAutoCommit(false);
+  const conn: OracleConnection = await connManager.getConnection()
+  conn.setAutoCommit(false)
 
   await tryWith(conn, async (conn: OracleConnection) => {
     // create PGQL Connection
-    const pgqlConn: PgqlConnection = PgqlConnection.getConnection(conn);
+    const pgqlConn: PgqlConnection = PgqlConnection.getConnection(conn)
     // drop a Graph for test
-    const dropStmt: PgqlStatement = await pgqlConn.createStatement();
+    const dropStmt: PgqlStatement = await pgqlConn.createStatement()
     await tryWith(dropStmt, async (dropStmt: PgqlStatement) => {
       await dropStmt.execute(`
           DROP PROPERTY GRAPH ${graphName}
-        `);
-    });
-  });
+        `)
+    })
+  })
 }
 
 export async function executeQueryTest(
-  func: (pgqlConn: PgqlConnection) => Promise<void>
+  func: (pgqlConn: PgqlConnection) => Promise<void>,
 ) {
-  const conn: OracleConnection = await connManager.getConnection();
-  conn.setAutoCommit(false);
+  const conn: OracleConnection = await connManager.getConnection()
+  conn.setAutoCommit(false)
 
   await tryWith(conn, async (conn: OracleConnection) => {
     // create PGQL Connection
-    const pgqlConn: PgqlConnection = PgqlConnection.getConnection(conn);
-    await func(pgqlConn);
-  });
+    const pgqlConn: PgqlConnection = PgqlConnection.getConnection(conn)
+    await func(pgqlConn)
+  })
 }

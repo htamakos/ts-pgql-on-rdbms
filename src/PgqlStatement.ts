@@ -1,83 +1,83 @@
-import { JavaPgqlResultSet, PgqlResultSet } from "./PgqlResultSet";
-import { AutoClosable, AutoCloseableSync } from "./Resource";
+import { JavaPgqlResultSet, PgqlResultSet } from './PgqlResultSet'
+import { AutoClosable, AutoCloseableSync } from './Resource'
 
 export interface JavaPgqlStatement extends AutoClosable, AutoCloseableSync {
-  getBatchSizeSync(): number;
-  getFetchSizeSync(): number;
-  getModifyCountSync(): number;
-  getResultSetSync(): JavaPgqlResultSet;
-  setBatchSizeSync(batchSize: number): void;
-  setFetchSizeSync(fetchSize: number): void;
+  getBatchSizeSync(): number
+  getFetchSizeSync(): number
+  getModifyCountSync(): number
+  getResultSetSync(): JavaPgqlResultSet
+  setBatchSizeSync(batchSize: number): void
+  setFetchSizeSync(fetchSize: number): void
 
-  cancel(): Promise<void>;
-  closeSync(): void;
-  close(): Promise<void>;
+  cancel(): Promise<void>
+  closeSync(): void
+  close(): Promise<void>
 
-  execute(pgql: string): Promise<boolean>;
+  execute(pgql: string): Promise<boolean>
   execute(
     pgql: string,
     parallel: number,
     dyanamicSampling: number,
     matchOptions: string,
-    options: string
-  ): Promise<boolean>;
+    options: string,
+  ): Promise<boolean>
 
-  executeQuery(pgql: string): Promise<JavaPgqlResultSet>;
+  executeQuery(pgql: string): Promise<JavaPgqlResultSet>
   executeQuery(
     pgql: string,
     timeout: number,
     parallel: number,
     dynamicSampling: number,
     maxResults: number,
-    options: string
-  ): Promise<JavaPgqlResultSet>;
+    options: string,
+  ): Promise<JavaPgqlResultSet>
 }
 
 export class PgqlStatement implements AutoClosable, AutoCloseableSync {
-  private readonly internalObj: JavaPgqlStatement;
+  private readonly internalObj: JavaPgqlStatement
 
   constructor(readonly stmt: JavaPgqlStatement) {
-    this.internalObj = stmt;
+    this.internalObj = stmt
   }
 
   getBatchSize(): number {
-    return this.internalObj.getBatchSizeSync();
+    return this.internalObj.getBatchSizeSync()
   }
 
   getFetchSize(): number {
-    return this.internalObj.getFetchSizeSync();
+    return this.internalObj.getFetchSizeSync()
   }
 
   getModifyCount(): number {
-    return this.internalObj.getModifyCountSync();
+    return this.internalObj.getModifyCountSync()
   }
 
   getResultSet(): PgqlResultSet {
-    return new PgqlResultSet(this.internalObj.getResultSetSync());
+    return new PgqlResultSet(this.internalObj.getResultSetSync())
   }
 
   setBatchSize(batchSize: number): void {
-    this.internalObj.setBatchSizeSync(batchSize);
+    this.internalObj.setBatchSizeSync(batchSize)
   }
 
   setFetchSize(fetchSize: number): void {
-    this.internalObj.setFetchSizeSync(fetchSize);
+    this.internalObj.setFetchSizeSync(fetchSize)
   }
 
   cancel(): Promise<void> {
-    return this.internalObj.cancel();
+    return this.internalObj.cancel()
   }
 
   closeSync(): void {
-    return this.internalObj.closeSync();
+    return this.internalObj.closeSync()
   }
 
   async close(): Promise<void> {
-    return this.internalObj.close();
+    return this.internalObj.close()
   }
 
   async execute(pgql: string): Promise<boolean> {
-    return this.internalObj.execute(pgql);
+    return this.internalObj.execute(pgql)
   }
 
   async executeWithOptions(
@@ -85,20 +85,20 @@ export class PgqlStatement implements AutoClosable, AutoCloseableSync {
     parallel: number,
     dynamicSampling: number,
     matchOptions: string,
-    options: string
+    options: string,
   ): Promise<boolean> {
     return this.internalObj.execute(
       pgql,
       parallel,
       dynamicSampling,
       matchOptions,
-      options
-    );
+      options,
+    )
   }
 
   async executeQuery(pgql: string): Promise<PgqlResultSet> {
-    const rs: JavaPgqlResultSet = await this.internalObj.executeQuery(pgql);
-    return new PgqlResultSet(rs);
+    const rs: JavaPgqlResultSet = await this.internalObj.executeQuery(pgql)
+    return new PgqlResultSet(rs)
   }
 
   async executeQueryWithOptions(
@@ -107,7 +107,7 @@ export class PgqlStatement implements AutoClosable, AutoCloseableSync {
     parallel: number,
     dynamicSampling: number,
     maxResults: number,
-    options: string
+    options: string,
   ): Promise<PgqlResultSet> {
     const rs = await this.internalObj.executeQuery(
       pgql,
@@ -115,9 +115,9 @@ export class PgqlStatement implements AutoClosable, AutoCloseableSync {
       parallel,
       dynamicSampling,
       maxResults,
-      options
-    );
+      options,
+    )
 
-    return new PgqlResultSet(rs);
+    return new PgqlResultSet(rs)
   }
 }

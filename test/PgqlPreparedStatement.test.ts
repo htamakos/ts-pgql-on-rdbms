@@ -1,26 +1,26 @@
-import { PgqlConnection } from "../src/PgqlConnection";
-import { PgqlPreparedStatement } from "../src/PgqlPreparedStatement";
-import { PgqlResultSet } from "../src/PgqlResultSet";
-import { tryWith } from "../src/Resource";
+import { PgqlConnection } from '../src/PgqlConnection'
+import { PgqlPreparedStatement } from '../src/PgqlPreparedStatement'
+import { PgqlResultSet } from '../src/PgqlResultSet'
+import { tryWith } from '../src/Resource'
 
-import { createGraph, dropGraph, executeQueryTest } from "./TestHelper";
+import { createGraph, dropGraph, executeQueryTest } from './TestHelper'
 
-const TEST_GRAPH_NAME: string = "TEST_GRAPH4";
+const TEST_GRAPH_NAME: string = 'TEST_GRAPH4'
 
-describe("PgqlPreparedStatement", (): void => {
-  beforeAll(() => createGraph(TEST_GRAPH_NAME));
-  afterAll(() => dropGraph(TEST_GRAPH_NAME));
+describe('PgqlPreparedStatement', (): void => {
+  beforeAll(() => createGraph(TEST_GRAPH_NAME))
+  afterAll(() => dropGraph(TEST_GRAPH_NAME))
 
-  test("should execute INSERT and SELECT PGQL PareparedStatement", async (): Promise<void> => {
+  test('should execute INSERT and SELECT PGQL PareparedStatement', async (): Promise<void> => {
     await executeQueryTest(async (pgqlConn: PgqlConnection) => {
-      const labelValue: string = "NEW_LABEL";
-      const strPropValue: string = "strValue";
-      const intPropValue: number = 9999999;
-      const longPropValue: number = 90;
-      const floatPropValue: number = 10;
-      const doublePropValue: number = 0.001;
-      const booleanPropValue: boolean = false;
-      const timestampValue: Date = new Date();
+      const labelValue: string = 'NEW_LABEL'
+      const strPropValue: string = 'strValue'
+      const intPropValue: number = 9999999
+      const longPropValue: number = 90
+      const floatPropValue: number = 10
+      const doublePropValue: number = 0.001
+      const booleanPropValue: boolean = false
+      const timestampValue: Date = new Date()
 
       const insertPstmt = await pgqlConn.prepareStatement(`
             INSERT INTO ${TEST_GRAPH_NAME}
@@ -33,19 +33,19 @@ describe("PgqlPreparedStatement", (): void => {
                 v.BOOLEAN_PROP = ?,
                 v.TIMESTAMP_PROP = ? 
               )
-        `);
+        `)
 
-      insertPstmt.setString(1, strPropValue);
-      insertPstmt.setInt(2, intPropValue);
-      insertPstmt.setLong(3, longPropValue);
-      insertPstmt.setFloat(4, floatPropValue);
-      insertPstmt.setDouble(5, doublePropValue);
-      insertPstmt.setBoolean(6, booleanPropValue);
-      insertPstmt.setTimestamp(7, timestampValue);
+      insertPstmt.setString(1, strPropValue)
+      insertPstmt.setInt(2, intPropValue)
+      insertPstmt.setLong(3, longPropValue)
+      insertPstmt.setFloat(4, floatPropValue)
+      insertPstmt.setDouble(5, doublePropValue)
+      insertPstmt.setBoolean(6, booleanPropValue)
+      insertPstmt.setTimestamp(7, timestampValue)
 
       await tryWith(insertPstmt, async (insertPstmt: PgqlPreparedStatement) => {
-        await insertPstmt.executeWithOptions(0, 2, "", "AUTO_COMMIT=F");
-      });
+        await insertPstmt.executeWithOptions(0, 2, '', 'AUTO_COMMIT=F')
+      })
 
       const checkStatement: PgqlPreparedStatement = await pgqlConn.prepareStatement(`
             SELECT
@@ -66,53 +66,53 @@ describe("PgqlPreparedStatement", (): void => {
             and n.BOOLEAN_PROP = ?
             and n.TIMESTAMP_PROP = ?
             LIMIT 1
-      `);
+      `)
       await tryWith(
         checkStatement,
         async (checkStatement: PgqlPreparedStatement) => {
-          checkStatement.setString(1, strPropValue);
-          checkStatement.setInt(2, intPropValue);
-          checkStatement.setLong(3, longPropValue);
-          checkStatement.setFloat(4, floatPropValue);
-          checkStatement.setDouble(5, doublePropValue);
-          checkStatement.setBoolean(6, booleanPropValue);
-          checkStatement.setTimestamp(7, timestampValue);
+          checkStatement.setString(1, strPropValue)
+          checkStatement.setInt(2, intPropValue)
+          checkStatement.setLong(3, longPropValue)
+          checkStatement.setFloat(4, floatPropValue)
+          checkStatement.setDouble(5, doublePropValue)
+          checkStatement.setBoolean(6, booleanPropValue)
+          checkStatement.setTimestamp(7, timestampValue)
 
-          const rs: PgqlResultSet = await checkStatement.executeQuery();
+          const rs: PgqlResultSet = await checkStatement.executeQuery()
 
           await tryWith(rs, async (rs: PgqlResultSet) => {
-            let isFound = false;
+            let isFound = false
 
             while (rs.next()) {
-              expect(rs.getString("STR_PROP")).toStrictEqual(strPropValue);
-              expect(rs.getInteger("INT_PROP")).toBe(intPropValue);
-              expect(rs.getLong("LONG_PROP")).toBe(longPropValue);
-              expect(rs.getFloat("FLOAT_PROP")).toBe(floatPropValue);
-              expect(rs.getDouble("DOUBLE_PROP")).toBe(doublePropValue);
-              expect(rs.getBoolean("BOOLEAN_PROP")).toBe(booleanPropValue);
-              expect(rs.getTimestamp("TIMESTAMP_PROP")).toStrictEqual(
-                timestampValue
-              );
-              isFound = true;
+              expect(rs.getString('STR_PROP')).toStrictEqual(strPropValue)
+              expect(rs.getInteger('INT_PROP')).toBe(intPropValue)
+              expect(rs.getLong('LONG_PROP')).toBe(longPropValue)
+              expect(rs.getFloat('FLOAT_PROP')).toBe(floatPropValue)
+              expect(rs.getDouble('DOUBLE_PROP')).toBe(doublePropValue)
+              expect(rs.getBoolean('BOOLEAN_PROP')).toBe(booleanPropValue)
+              expect(rs.getTimestamp('TIMESTAMP_PROP')).toStrictEqual(
+                timestampValue,
+              )
+              isFound = true
             }
 
-            expect(isFound).toBeTruthy();
-          });
-        }
-      );
-      pgqlConn.getJdbcConnection().rollback();
-    });
-  });
+            expect(isFound).toBeTruthy()
+          })
+        },
+      )
+      pgqlConn.getJdbcConnection().rollback()
+    })
+  })
 
-  test("should execute UPDATE PGQL PareparedStatement", async (): Promise<void> => {
+  test('should execute UPDATE PGQL PareparedStatement', async (): Promise<void> => {
     await executeQueryTest(async (pgqlConn: PgqlConnection) => {
-      const strPropValue: string = "strValue";
-      const intPropValue: number = 9999999;
-      const longPropValue: number = 987654321;
-      const floatPropValue: number = 10;
-      const doublePropValue: number = 0.001;
-      const booleanPropValue: boolean = false;
-      const timestampValue: Date = new Date();
+      const strPropValue: string = 'strValue'
+      const intPropValue: number = 9999999
+      const longPropValue: number = 987654321
+      const floatPropValue: number = 10
+      const doublePropValue: number = 0.001
+      const booleanPropValue: boolean = false
+      const timestampValue: Date = new Date()
 
       const updatePstmt = await pgqlConn.prepareStatement(`
         UPDATE v SET (
@@ -126,19 +126,19 @@ describe("PgqlPreparedStatement", (): void => {
           )
         FROM MATCH (v) ON ${TEST_GRAPH_NAME}
         LIMIT 1
-      `);
+      `)
 
-      updatePstmt.setString(1, strPropValue);
-      updatePstmt.setInt(2, intPropValue);
-      updatePstmt.setLong(3, longPropValue);
-      updatePstmt.setFloat(4, floatPropValue);
-      updatePstmt.setDouble(5, doublePropValue);
-      updatePstmt.setBoolean(6, booleanPropValue);
-      updatePstmt.setTimestamp(7, timestampValue);
+      updatePstmt.setString(1, strPropValue)
+      updatePstmt.setInt(2, intPropValue)
+      updatePstmt.setLong(3, longPropValue)
+      updatePstmt.setFloat(4, floatPropValue)
+      updatePstmt.setDouble(5, doublePropValue)
+      updatePstmt.setBoolean(6, booleanPropValue)
+      updatePstmt.setTimestamp(7, timestampValue)
 
       await tryWith(updatePstmt, async (updatePstmt: PgqlPreparedStatement) => {
-        await updatePstmt.executeWithOptions(0, 2, "", "AUTO_COMMIT=F");
-      });
+        await updatePstmt.executeWithOptions(0, 2, '', 'AUTO_COMMIT=F')
+      })
 
       const checkStatement: PgqlPreparedStatement = await pgqlConn.prepareStatement(`
             SELECT
@@ -153,34 +153,34 @@ describe("PgqlPreparedStatement", (): void => {
             FROM MATCH (n) ON ${TEST_GRAPH_NAME}
             WHERE n.LONG_PROP = ?
             LIMIT 1
-      `);
+      `)
       await tryWith(
         checkStatement,
         async (checkStatement: PgqlPreparedStatement) => {
-          checkStatement.setLong(1, longPropValue);
-          const rs: PgqlResultSet = await checkStatement.executeQuery();
+          checkStatement.setLong(1, longPropValue)
+          const rs: PgqlResultSet = await checkStatement.executeQuery()
 
           await tryWith(rs, async (rs: PgqlResultSet) => {
-            let isFound = false;
+            let isFound = false
 
             while (rs.next()) {
-              expect(rs.getString("STR_PROP")).toStrictEqual(strPropValue);
-              expect(rs.getInteger("INT_PROP")).toBe(intPropValue);
-              expect(rs.getLong("LONG_PROP")).toBe(longPropValue);
-              expect(rs.getFloat("FLOAT_PROP")).toBe(floatPropValue);
-              expect(rs.getDouble("DOUBLE_PROP")).toBe(doublePropValue);
-              expect(rs.getBoolean("BOOLEAN_PROP")).toBe(booleanPropValue);
-              expect(rs.getTimestamp("TIMESTAMP_PROP")).toStrictEqual(
-                timestampValue
-              );
-              isFound = true;
+              expect(rs.getString('STR_PROP')).toStrictEqual(strPropValue)
+              expect(rs.getInteger('INT_PROP')).toBe(intPropValue)
+              expect(rs.getLong('LONG_PROP')).toBe(longPropValue)
+              expect(rs.getFloat('FLOAT_PROP')).toBe(floatPropValue)
+              expect(rs.getDouble('DOUBLE_PROP')).toBe(doublePropValue)
+              expect(rs.getBoolean('BOOLEAN_PROP')).toBe(booleanPropValue)
+              expect(rs.getTimestamp('TIMESTAMP_PROP')).toStrictEqual(
+                timestampValue,
+              )
+              isFound = true
             }
 
-            expect(isFound).toBeTruthy();
-          });
-        }
-      );
-      pgqlConn.getJdbcConnection().rollback();
-    });
-  });
-});
+            expect(isFound).toBeTruthy()
+          })
+        },
+      )
+      pgqlConn.getJdbcConnection().rollback()
+    })
+  })
+})
