@@ -73,6 +73,7 @@ describe('Session', (): void => {
       ]
 
       await session.modify(insertPgql, parameters)
+      session.commit()
 
       const checkStatement: string = `
       SELECT
@@ -171,6 +172,7 @@ describe('Session', (): void => {
         },
       ]
       await session.modify(updatePgql, parameters)
+      session.commit()
 
       const checkStatement: string = `
       SELECT
