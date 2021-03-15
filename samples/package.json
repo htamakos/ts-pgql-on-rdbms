@@ -1,0 +1,15 @@
+{
+  "name": "samples",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "htamakos <tmkshrnr@gmail.com> (https://github.com/htamakos)",
+  "license": "ISC",
+  "dependencies": {
+    "ts-pgql-on-rdbms": "file:.."
+  }
+}
