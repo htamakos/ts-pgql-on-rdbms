@@ -74,7 +74,7 @@ export async function createGraph(graphName: string): Promise<void> {
                 v1.BOOLEAN_PROP = false,
                 v1.TIMESTAMP_PROP = timestamp '2021-03-12 10:00:00'
             ),
-        VERTEX v2 LABELS(VL)
+        VERTEX v2 LABELS(VL2)
             PROPERTIES(
                 v2.STR_PROP = 'hoge2',
                 v2.INT_PROP = CAST (2 as integer),
@@ -140,10 +140,4 @@ export async function executeQueryTest(
     const pgqlConn: PgqlConnection = PgqlConnection.getConnection(conn)
     await func(pgqlConn)
   })
-}
-
-export function* range(start: number, end: number) {
-  for (let i = start; i < end; i++) {
-    yield i
-  }
 }

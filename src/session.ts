@@ -1,10 +1,10 @@
+import { OracleConnection } from './core/Oracle'
 import { PgqlConnection } from './core/PgqlConnection'
-import { PgqlResultSet } from './core/PgqlResultSet'
 import { AutoClosable, AutoCloseableSync } from './core/Resource'
 import { Executor, IExecutor } from './executor'
-import { IModifyOptions, IOptions, ISelectOptions } from './option'
+import { IOptions } from './option'
 import { IParameters } from './parameter'
-import { IParameterHandler, ParemeterHandler } from './parameter-handler'
+import { IParameterHandler, ParameterHandler } from './parameter-handler'
 import { IResult } from './result'
 import { IResultHanlder, ResultHanlder } from './result-handler'
 
@@ -19,15 +19,15 @@ export interface ISession extends AutoClosable, AutoCloseableSync {
     pgql: string,
     parameters?: IParameters,
     options?: IOptions,
-    selectOptions?: ISelectOptions,
   ): Promise<IResult>
   modify(
     pgql: string,
     parameters?: IParameters,
     options?: IOptions,
-    selectOptions?: ISelectOptions,
-    modifyOptions?: IModifyOptions,
   ): Promise<boolean>
+
+  commit(): void
+  rollback(): void
 }
 
 /**
@@ -41,7 +41,7 @@ export class Session implements ISession {
 
   constructor(pgqlConn: PgqlConnection) {
     this.pgqlConn = pgqlConn
-    this.parameterHandler = new ParemeterHandler()
+    this.parameterHandler = new ParameterHandler()
     this.resultHandler = new ResultHanlder()
     this.executor = new Executor()
   }
@@ -63,23 +63,17 @@ export class Session implements ISession {
     pgql: string,
     parameters?: IParameters,
     options?: IOptions,
-    selectOptions?: ISelectOptions,
   ): Promise<IResult> {
-    const rs: PgqlResultSet = await this.executor.query(
+    const result: IResult = await this.executor.query(
       this.pgqlConn,
       pgql,
       this.parameterHandler,
+      this.resultHandler,
       parameters,
       options,
-      selectOptions,
     )
 
-    try {
-      const result: IResult = await this.resultHandler.handle(rs)
-      return result
-    } finally {
-      rs.closeSync()
-    }
+    return result
   }
 
   /**
@@ -89,17 +83,27 @@ export class Session implements ISession {
     pgql: string,
     parameters?: IParameters,
     options?: IOptions,
-    selectOptions?: ISelectOptions,
-    modifyOptions?: IModifyOptions,
   ): Promise<boolean> {
-    return this.executor.modify(
+    return await this.executor.modify(
       this.pgqlConn,
       pgql,
       this.parameterHandler,
       parameters,
       options,
-      selectOptions,
-      modifyOptions,
     )
+  }
+
+  commit(): void {
+    const oraConn: OracleConnection = this.pgqlConn.getJdbcConnection()
+    if (!oraConn.isClosed()) {
+      oraConn.commit()
+    }
+  }
+
+  rollback(): void {
+    const oraConn: OracleConnection = this.pgqlConn.getJdbcConnection()
+    if (!oraConn.isClosed()) {
+      oraConn.rollback()
+    }
   }
 }

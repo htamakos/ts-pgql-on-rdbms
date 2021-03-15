@@ -75,6 +75,8 @@ export class Pgql implements IPgqlDriver {
   async getSession(): Promise<ISession> {
     // TODO: implements Session cache
     const conn: OracleConnection = await this.coreOracleConnectionManager.getConnection()
+    conn.setAutoCommit(false)
+
     const pgqlConn: PgqlConnection = PgqlConnection.getConnection(conn)
     return new Session(pgqlConn)
   }

@@ -4,7 +4,8 @@ import { PgqlResultSet } from '../../src/core/PgqlResultSet'
 import { PgqlResultSetMetaDataImpl } from '../../src/core/PgqlResultSetMetaDataImpl'
 import { tryWith } from '../../src/core/Resource'
 
-import { range, createGraph, dropGraph, executeQueryTest } from '../TestHelper'
+import { createGraph, dropGraph, executeQueryTest } from '../TestHelper'
+import * as utils from '../../src/utils'
 
 const TEST_GRAPH_NAME: string = 'TEST_GRAPH_RESULT_SET_META'
 
@@ -53,7 +54,7 @@ describe('PgqlResultSetMetaDataImpl', (): void => {
 
           expect(meta.getColumnCount()).toBe(7)
           const columnNames: string[] = [
-            ...range(0, meta.getColumnCount()),
+            ...utils.range(0, meta.getColumnCount()),
           ].map((i) => meta.getColumnName(i))
           const expectColumnNames: string[] = [
             intPropName,
@@ -65,7 +66,7 @@ describe('PgqlResultSetMetaDataImpl', (): void => {
             timestampPropName,
           ]
 
-          for (let i of [...range(0, meta.getColumnCount())]) {
+          for (let i of [...utils.range(0, meta.getColumnCount())]) {
             expect(columnNames[i]).toBe(expectColumnNames[i])
           }
         })

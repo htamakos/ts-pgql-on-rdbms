@@ -23,13 +23,14 @@ export class ResultHanlder implements IResultHanlder {
   }
 
   private getColumnTypes(rs: PgqlResultSet, columnCount: number): number[] {
-    rs.next()
-    const columnTypes: number[] = [...utils.range(0, columnCount)].map((i) =>
-      rs.getValueType(i + 1),
-    )
-    rs.beforeFirst()
-
-    return columnTypes
+    if (rs.next()) {
+      const columnTypes: number[] = [...utils.range(0, columnCount)].map((i) =>
+        rs.getValueType(i + 1),
+      )
+      rs.beforeFirst()
+      return columnTypes
+    }
+    return []
   }
 
   async handle(rs: PgqlResultSet): Promise<IResult> {
@@ -41,33 +42,37 @@ export class ResultHanlder implements IResultHanlder {
 
     const records: IRecord[] = []
 
-    while (rs.next()) {
-      const values: PgqlType[] = [...utils.range(0, columnCount)].map((i) => {
-        const t: number = columnTypes[i]
-        const name: string = columnNames[i]
+    try {
+      while (rs.next()) {
+        const values: PgqlType[] = [...utils.range(0, columnCount)].map((i) => {
+          const t: number = columnTypes[i]
+          const name: string = columnNames[i]
 
-        switch (t) {
-          case PgDatatypeConstants.TYPE_DT_BOOL:
-            return rs.getBoolean(name)
-          case PgDatatypeConstants.TYPE_DT_DATE:
-            return rs.getTimestamp(name)
-          case PgDatatypeConstants.TYPE_DT_INTEGER:
-            return rs.getInteger(name)
-          case PgDatatypeConstants.TYPE_DT_LONG:
-            return rs.getLong(name)
-          case PgDatatypeConstants.TYPE_DT_FLOAT:
-            return rs.getFloat(name)
-          case PgDatatypeConstants.TYPE_DT_DOUBLE:
-            return rs.getDouble(name)
-          case PgDatatypeConstants.TYPE_DT_STRING:
-            return rs.getString(name)
-          default:
-            throw new Error(`unkown PGQL types: ${t}`)
-        }
-      })
+          switch (t) {
+            case PgDatatypeConstants.TYPE_DT_BOOL:
+              return rs.getBoolean(name)
+            case PgDatatypeConstants.TYPE_DT_DATE:
+              return rs.getTimestamp(name)
+            case PgDatatypeConstants.TYPE_DT_INTEGER:
+              return rs.getInteger(name)
+            case PgDatatypeConstants.TYPE_DT_LONG:
+              return rs.getLong(name)
+            case PgDatatypeConstants.TYPE_DT_FLOAT:
+              return rs.getFloat(name)
+            case PgDatatypeConstants.TYPE_DT_DOUBLE:
+              return rs.getDouble(name)
+            case PgDatatypeConstants.TYPE_DT_STRING:
+              return rs.getString(name)
+            default:
+              throw new Error(`unkown PGQL types: ${t}`)
+          }
+        })
 
-      const record: IRecord = new Record(columnNames, values)
-      records.push(record)
+        const record: IRecord = new Record(columnNames, values)
+        records.push(record)
+      }
+    } finally {
+      rs.closeSync()
     }
 
     return new Result(records)

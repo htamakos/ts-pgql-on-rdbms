@@ -1,18 +1,11 @@
 import { PgqlConnection } from './core/PgqlConnection'
 import { PgqlPreparedStatement } from './core/PgqlPreparedStatement'
 import { PgqlResultSet } from './core/PgqlResultSet'
-import {
-  DEFAULT_MODIFY_OPTIONS,
-  DEFAULT_OPTIONS,
-  DEFAULT_SELECT_OPTIONS,
-  genereateModifyOptionString,
-  genereateSelectOptionString,
-  IModifyOptions,
-  IOptions,
-  ISelectOptions,
-} from './option'
+import { DEFAULT_OPTIONS, IOptions } from './option'
 import { IParameters } from './parameter'
 import { IParameterHandler } from './parameter-handler'
+import { IResult } from './result'
+import { IResultHanlder } from './result-handler'
 
 /**
  * TODO: document comment
@@ -25,10 +18,10 @@ export interface IExecutor {
     pgqlConn: PgqlConnection,
     pgql: string,
     parameterHandler: IParameterHandler,
+    resultHandler: IResultHanlder,
     parameters?: IParameters,
     options?: IOptions,
-    selectOptions?: ISelectOptions,
-  ): Promise<PgqlResultSet>
+  ): Promise<IResult>
 
   /**
    * TODO: document comment
@@ -39,8 +32,6 @@ export interface IExecutor {
     parameterHandler: IParameterHandler,
     parameters?: IParameters,
     options?: IOptions,
-    selectOptions?: ISelectOptions,
-    modifyOptions?: IModifyOptions,
   ): Promise<boolean>
 }
 
@@ -55,28 +46,36 @@ export class Executor implements IExecutor {
     pgqlConn: PgqlConnection,
     pgql: string,
     parameterHandler: IParameterHandler,
+    resultHandler: IResultHanlder,
     parameters?: IParameters,
     options?: IOptions,
-    selectOptions?: ISelectOptions,
-  ): Promise<PgqlResultSet> {
+  ): Promise<IResult> {
     // TODO: implements PreparedStatement cache
     const pstmt: PgqlPreparedStatement = await pgqlConn.prepareStatement(pgql)
-    parameterHandler.setParameters(pstmt, parameters)
+    let rs: PgqlResultSet | undefined = undefined
+    try {
+      parameterHandler.setParameters(pstmt, parameters)
+      if (options !== undefined) {
+        rs = await pstmt.executeQueryWithOptions(
+          options.timeout,
+          options.parallel,
+          options.dynamicSampling,
+          options.maxResults,
+          '',
+        )
+      } else {
+        rs = await pstmt.executeQuery()
+      }
 
-    if (options !== undefined) {
-      const _selectOptions: ISelectOptions =
-        selectOptions === undefined ? DEFAULT_SELECT_OPTIONS : selectOptions
-
-      return pstmt.executeQueryWithOptions(
-        options.timeout,
-        options.parallel,
-        options.dynamicSampling,
-        options.maxResults,
-        genereateSelectOptionString(_selectOptions),
-      )
+      return await resultHandler.handle(rs)
+    } finally {
+      if (rs !== undefined && rs !== null) {
+        rs.closeSync()
+      }
+      if (pstmt !== undefined && pstmt !== null) {
+        pstmt.closeSync()
+      }
     }
-
-    return pstmt.executeQuery()
   }
 
   /**
@@ -88,25 +87,26 @@ export class Executor implements IExecutor {
     parameterHandler: IParameterHandler,
     parameters?: IParameters,
     options?: IOptions,
-    selectOptions?: ISelectOptions,
-    modifyOptions?: IModifyOptions,
   ): Promise<boolean> {
     // TODO: implements PreparedStatement cache
     const pstmt: PgqlPreparedStatement = await pgqlConn.prepareStatement(pgql)
-    parameterHandler.setParameters(pstmt, parameters)
 
-    const _options: IOptions =
-      options !== undefined ? options! : DEFAULT_OPTIONS
-    const _selectOptions: ISelectOptions =
-      selectOptions !== undefined ? selectOptions! : DEFAULT_SELECT_OPTIONS
-    const _modifyOptions: IModifyOptions =
-      modifyOptions !== undefined ? modifyOptions! : DEFAULT_MODIFY_OPTIONS
+    try {
+      parameterHandler.setParameters(pstmt, parameters)
 
-    return pstmt.executeWithOptions(
-      _options.parallel,
-      _options.dynamicSampling,
-      genereateSelectOptionString(_selectOptions),
-      genereateModifyOptionString(_modifyOptions),
-    )
+      const _options: IOptions =
+        options !== undefined ? options! : DEFAULT_OPTIONS
+
+      return await pstmt.executeWithOptions(
+        _options.parallel,
+        _options.dynamicSampling,
+        '',
+        'AUTO_COMMIT=F',
+      )
+    } finally {
+      if (pstmt !== undefined && pstmt !== null) {
+        pstmt.closeSync()
+      }
+    }
   }
 }
