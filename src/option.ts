@@ -1,5 +1,5 @@
-const PGQL_OPTION_TRUE: string = "T"
-const PGQL_OPTION_FALSE: string = "F"
+const PGQL_OPTION_TRUE: string = 'T'
+const PGQL_OPTION_FALSE: string = 'F'
 /**
  * TODO: document comment
  */
@@ -41,10 +41,16 @@ export const DEFAULT_MODIFY_OPTIONS: IModifyOptions = {
 /**
  * TODO: document comment
  */
-export function genereateModifyOptionString(op: IModifyOptions) : string {
-  const streamingStr: string = op.streaming ? PGQL_OPTION_TRUE : PGQL_OPTION_FALSE
-  const autoCommitStr: string = op.autoCommit ? PGQL_OPTION_TRUE : PGQL_OPTION_FALSE
-  const deleteCascadeStr: string = op.deleteCascade ? PGQL_OPTION_TRUE : PGQL_OPTION_FALSE
+export function genereateModifyOptionString(op: IModifyOptions): string {
+  const streamingStr: string = op.streaming
+    ? PGQL_OPTION_TRUE
+    : PGQL_OPTION_FALSE
+  const autoCommitStr: string = op.autoCommit
+    ? PGQL_OPTION_TRUE
+    : PGQL_OPTION_FALSE
+  const deleteCascadeStr: string = op.deleteCascade
+    ? PGQL_OPTION_TRUE
+    : PGQL_OPTION_FALSE
   return `STREAMING=${streamingStr},AUTO_COMMIT=${autoCommitStr},DELETE_CASCADE=${deleteCascadeStr}`
 }
 
@@ -60,9 +66,11 @@ export interface ISelectOptions {
 /**
  * TODO: document comment
  */
-export function genereateSelectOptionString(op: ISelectOptions) : string {
+export function genereateSelectOptionString(op: ISelectOptions): string {
   const useRwStr: string = op.useRw ? PGQL_OPTION_TRUE : PGQL_OPTION_FALSE
-  const edgeSetPartialStr: string = op.edgeSetPartial ? PGQL_OPTION_TRUE : PGQL_OPTION_FALSE
+  const edgeSetPartialStr: string = op.edgeSetPartial
+    ? PGQL_OPTION_TRUE
+    : PGQL_OPTION_FALSE
   return `USE_RW=${useRwStr},MAX_PATH_LEN=${op.maxPathLen},EDGE_SET_PARTIAL=${edgeSetPartialStr}`
 }
 

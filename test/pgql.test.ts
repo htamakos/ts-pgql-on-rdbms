@@ -1,6 +1,6 @@
-import {Pgql} from '../src/pgql'
-import {IResult} from '../src/result'
-import {ISession} from '../src/session'
+import { Pgql } from '../src/pgql'
+import { IResult } from '../src/result'
+import { ISession } from '../src/session'
 import { createGraph, dropGraph, oracleDatabaseConfig } from './TestHelper'
 
 const TEST_GRAPH_NAME: string = 'TEST_GRAPH_PGQL_DRIVER'

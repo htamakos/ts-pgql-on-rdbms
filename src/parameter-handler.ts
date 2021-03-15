@@ -1,5 +1,5 @@
-import {PgqlPreparedStatement} from "./core/PgqlPreparedStatement";
-import {IParameter, IParameters} from "./parameter";
+import { PgqlPreparedStatement } from './core/PgqlPreparedStatement'
+import { IParameter, IParameters } from './parameter'
 
 /**
  * TODO: document comment

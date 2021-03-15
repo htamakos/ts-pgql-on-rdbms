@@ -1,30 +1,35 @@
 # [WIP] ts-pgql-on-rdbms
+
 [PGQL on RDBMS](https://docs.oracle.com/en/database/oracle/property-graph/21.1/spgdg/property-graph-query-language-pgql.html#GUID-94F08780-EC3D-4F9B-985F-49984939E61C) を typescript で実行するためのライブラリです。
 
 PGQL on RDBMS は PGQL を SQL に変換して実行してするためのモジュールで Java ライブラリとして提供されています。
 Oracle から提供される この Java ライブラリを [node-java](https://github.com/joeferner/node-java) を利用して、
 typescript から実行可能にしたものがこのライブラリです。
 
-※ 2021年3月21日現在では構想段階であり、Experimental なライブラリです。
+※ 2021 年 3 月 21 日現在では構想段階であり、Experimental なライブラリです。
 
 ## ビルドのための事前準備
+
 本ライブラリを実行するためには、以下のソフトウェアが必要です。
 
 - Oracle Database 19c
 - Oracle Graph Client 21.1
 - NodeJS v14.15.5 以上
-- JDK 11 
+- JDK 11
 
 ### 1. Oracle Database 19c のインストール
+
 - ローカルに Oracle Database を構築する場合には、以下を利用する
   - https://container-registry.oracle.com/pls/apex/f?p=113:10:4723150240763:::RP,10::
   - https://github.com/oracle/docker-images
 
 ### 2. Oracle Graph Client PL/SQL 21.1 パッケージを適用
+
 - [Oracle Graph Server and Client](https://www.oracle.com/database/technologies/spatialandgraph/property-graph-features/graph-server-and-client/graph-server-and-client-downloads.html) から `Oracle Graph Client for PL/SQL` をダウンロードし、
   zip ファイルを解凍して、格納されている README に従ってパッチを適用する
 
 ### 3. Oracle Graph Client 21.1 をダウンロード
+
 - [Oracle Graph Server and Client](https://www.oracle.com/database/technologies/spatialandgraph/property-graph-features/graph-server-and-client/graph-server-and-client-downloads.html) から `Oracle Graph Client for PL/SQL` をダウンロードし、
   zip ファイルを解凍して、格納されている `lib` ディレクトリ以下の `jar` ファイルをすべて `libs` 以下に配置する
 
@@ -124,12 +129,14 @@ $ tree -N ./libs
 ```
 
 ### 3. JDK 11 をインストール
+
 - https://www.oracle.com/jp/java/technologies/javase-jdk11-downloads.html
 
 ### 4. NodeJS 14 以上をインストール
+
 - node のバージョンマネージャを利用している等それぞれ管理方法があることが考えられるため、
   それぞれの方法に従ってインストールする
-  - [公式URL](https://nodejs.org/ja/download/)
+  - [公式 URL](https://nodejs.org/ja/download/)
 
 ### 5. npm インストール
 
@@ -138,6 +145,7 @@ $ npm install
 ```
 
 ### 6. PGX_CLASSPATH 環境変数の設定
+
 - `PGX_CLASSPATH` 環境変数に Oracle Graph Client の jar が格納されているディレクトリを指定する
 
 ```sh
@@ -145,7 +153,8 @@ $ export PGX_CLASSPATH=`pwd`/libs/
 ```
 
 ## テスト実行手順
-1. テストを実行する Oracle Database への接続 JDBC URLを `TEST_JDBC_URL`環境変数に設定する
+
+1. テストを実行する Oracle Database への接続 JDBC URL を `TEST_JDBC_URL`環境変数に設定する
 
 ```sh
 $ export TEST_JDBC_URL="jdbc:oracle:thins:@localhost:21521/pdb1"
@@ -232,5 +241,5 @@ async function executePgql() {
   }
 }
 
-executePgql().then(() => {});
+executePgql().then(() => {})
 ```

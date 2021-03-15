@@ -29,7 +29,7 @@ export const oracleDatabaseConfig: pgql.IOracleDatabaseConfig = {
   jdbcUrl: testDbConfig.url,
   userName: testDbConfig.user,
   password: testDbConfig.password,
-  databasePoolConfig: oraclePoolConfig
+  databasePoolConfig: oraclePoolConfig,
 }
 
 export const connManager: OracleConnectionManager = OracleConnectionManager.getInstance(

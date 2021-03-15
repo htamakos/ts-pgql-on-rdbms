@@ -1,9 +1,9 @@
-import {PgDatatypeConstants} from './core/PgDatatypeConstants'
+import { PgDatatypeConstants } from './core/PgDatatypeConstants'
 import { PgqlResultSet } from './core/PgqlResultSet'
 import { PgqlResultSetMetaDataImpl } from './core/PgqlResultSetMetaDataImpl'
-import {IRecord, Record} from './record'
+import { IRecord, Record } from './record'
 import { IResult, Result } from './result'
-import {PgqlType} from './types'
+import { PgqlType } from './types'
 import * as utils from './utils'
 
 export interface IResultHanlder {
