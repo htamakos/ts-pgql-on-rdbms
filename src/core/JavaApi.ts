@@ -40,4 +40,11 @@ WARNING: All illegal access operations will be denied in a future release
 */
 javaNodeApi.options.push('--add-opens=java.base/java.lang=ALL-UNNAMED')
 
+javaNodeApi.callStaticMethodSync(
+  'java.lang.System',
+  'setProperty',
+  'log4j.configurationFile',
+  `${PGX_CLASSPATH}/log4j2.xml`,
+)
+
 export default javaNodeApi

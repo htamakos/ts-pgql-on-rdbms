@@ -12,6 +12,7 @@ export { PgqlPreparedStatement } from './core/PgqlPreparedStatement'
 export { PgqlResultSet } from './core/PgqlResultSet'
 export { PgqlStatement } from './core/PgqlStatement'
 export { tryWith, tryWithSync } from './core/Resource'
+export { LOGGER } from './core/Logger'
 
 // Wrapper API
 export { IExecutor } from './executor'
