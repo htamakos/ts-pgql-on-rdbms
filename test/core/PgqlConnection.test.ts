@@ -10,8 +10,8 @@ import { connManager, createGraph, dropGraph } from '../TestHelper'
 const TEST_GRAPH_NAME: string = 'TEST_GRAPH1'
 
 describe('PgqlConnection', (): void => {
-  beforeAll(() => createGraph(TEST_GRAPH_NAME))
-  afterAll(() => dropGraph(TEST_GRAPH_NAME))
+  beforeAll(async () => await createGraph(TEST_GRAPH_NAME))
+  afterAll(async () => await dropGraph(TEST_GRAPH_NAME))
 
   test('should execute a SELECT PGQL', async (): Promise<void> => {
     // connection to Oracle Database

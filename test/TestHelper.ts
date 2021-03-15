@@ -1,3 +1,4 @@
+import * as pgql from '../src/pgql'
 import {
   OracleConnection,
   OracleConfig,
@@ -14,6 +15,22 @@ const testDbConfig: OracleConfig = new OracleConfigBuilder()
   .user(process.env.TEST_DB_USER || 'test_user')
   .password(process.env.TEST_DB_PASSWORD || 'welcome1')
   .build()
+
+const oraclePoolConfig: pgql.IOraclePoolConfig = {
+  poolName: 'pool2',
+  initialPoolSize: 1,
+  minPoolSize: 1,
+  maxPoolSize: 1,
+  timeoutCheckInteraval: 5,
+  inactiveConnectionTimeout: 60,
+}
+
+export const oracleDatabaseConfig: pgql.IOracleDatabaseConfig = {
+  jdbcUrl: testDbConfig.url,
+  userName: testDbConfig.user,
+  password: testDbConfig.password,
+  databasePoolConfig: oraclePoolConfig,
+}
 
 export const connManager: OracleConnectionManager = OracleConnectionManager.getInstance(
   testDbConfig,
@@ -57,7 +74,7 @@ export async function createGraph(graphName: string): Promise<void> {
                 v1.BOOLEAN_PROP = false,
                 v1.TIMESTAMP_PROP = timestamp '2021-03-12 10:00:00'
             ),
-        VERTEX v2 LABELS(VL)
+        VERTEX v2 LABELS(VL2)
             PROPERTIES(
                 v2.STR_PROP = 'hoge2',
                 v2.INT_PROP = CAST (2 as integer),
@@ -123,10 +140,4 @@ export async function executeQueryTest(
     const pgqlConn: PgqlConnection = PgqlConnection.getConnection(conn)
     await func(pgqlConn)
   })
-}
-
-export function* range(start: number, end: number) {
-  for (let i = start; i < end; i++) {
-    yield i
-  }
 }

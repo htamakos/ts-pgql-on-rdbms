@@ -1,5 +1,7 @@
 import javaNodeApi from './JavaApi'
+import { LOGGER } from './Logger'
 import { JavaOracleConnection, OracleConnection } from './Oracle'
+import { PgqlError } from './PgqlError'
 import {
   JavaPgqlPreparedStatement,
   PgqlPreparedStatement,
@@ -55,14 +57,35 @@ export class PgqlConnection {
   }
 
   async prepareStatement(pgql: string): Promise<PgqlPreparedStatement> {
-    const pstmt: JavaPgqlPreparedStatement = await this.pgqlConn.prepareStatement(
-      pgql,
-    )
-    return new PgqlPreparedStatement(pstmt)
+    const pstmt: JavaPgqlPreparedStatement = await this.pgqlConn
+      .prepareStatement(pgql)
+      .catch((error: Error) => {
+        if (LOGGER.isErrorEnabledSync()) {
+          LOGGER.errorSync(
+            `PgqlConnection#prepareStatement:
+PGQL:
+    ${pgql}
+            `,
+          )
+          LOGGER.errorSync(`PgqlConnection#prepareStatement: ${error.message}`)
+        }
+        throw new PgqlError(error.message)
+      })
+
+    return new PgqlPreparedStatement(pstmt, pgql)
   }
 
   async createStatement(): Promise<PgqlStatement> {
-    const stmt: JavaPgqlStatement = await this.pgqlConn.createStatement()
+    const stmt: JavaPgqlStatement = await this.pgqlConn
+      .createStatement()
+      .catch((error: Error) => {
+        if (LOGGER.isErrorEnabledSync()) {
+          LOGGER.errorSync(`PgqlConnection#createStatement: ${error.message}`)
+        }
+
+        throw new PgqlError(error.message)
+      })
+
     return new PgqlStatement(stmt)
   }
 }

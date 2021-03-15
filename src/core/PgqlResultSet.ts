@@ -4,6 +4,8 @@ import {
   JavaPgqlResultSetMetaDataImpl,
   PgqlResultSetMetaDataImpl,
 } from './PgqlResultSetMetaDataImpl'
+import { PgqlError } from './PgqlError'
+import { LOGGER } from './Logger'
 
 export interface JavaPgqlResultSet extends AutoClosable, AutoCloseableSync {
   closeSync(): void
@@ -37,7 +39,13 @@ export class PgqlResultSet implements AutoClosable, AutoCloseableSync {
   }
 
   async close(): Promise<void> {
-    return this.internalObj.close()
+    return this.internalObj.close().catch((error: Error) => {
+      if (LOGGER.isErrorEnabledSync()) {
+        LOGGER.errorSync(`PgqlResultSet#close: ${error.message}`)
+      }
+
+      throw new PgqlError(error.message)
+    })
   }
 
   print(): void {
