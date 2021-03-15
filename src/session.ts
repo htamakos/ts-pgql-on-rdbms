@@ -1,5 +1,6 @@
 import { OracleConnection } from './core/Oracle'
 import { PgqlConnection } from './core/PgqlConnection'
+import { PgqlError } from './core/PgqlError'
 import { AutoClosable, AutoCloseableSync } from './core/Resource'
 import { Executor, IExecutor } from './executor'
 import { IOptions } from './option'
@@ -64,14 +65,18 @@ export class Session implements ISession {
     parameters?: IParameters,
     options?: IOptions,
   ): Promise<IResult> {
-    const result: IResult = await this.executor.query(
-      this.pgqlConn,
-      pgql,
-      this.parameterHandler,
-      this.resultHandler,
-      parameters,
-      options,
-    )
+    const result: IResult = await this.executor
+      .query(
+        this.pgqlConn,
+        pgql,
+        this.parameterHandler,
+        this.resultHandler,
+        parameters,
+        options,
+      )
+      .catch((error: Error) => {
+        throw new PgqlError(error.message)
+      })
 
     return result
   }
@@ -84,13 +89,11 @@ export class Session implements ISession {
     parameters?: IParameters,
     options?: IOptions,
   ): Promise<boolean> {
-    return await this.executor.modify(
-      this.pgqlConn,
-      pgql,
-      this.parameterHandler,
-      parameters,
-      options,
-    )
+    return await this.executor
+      .modify(this.pgqlConn, pgql, this.parameterHandler, parameters, options)
+      .catch((error: Error) => {
+        throw new PgqlError(error.message)
+      })
   }
 
   commit(): void {

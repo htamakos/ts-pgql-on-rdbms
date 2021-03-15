@@ -7,6 +7,8 @@ import {
 import { JavaPgqlResultSet, PgqlResultSet } from './PgqlResultSet'
 import { AutoClosable, AutoCloseableSync } from './Resource'
 import javaNodeApi from './JavaApi'
+import { PgqlError } from './PgqlError'
+import { LOGGER } from './Logger'
 
 export interface JavaPgqlPreparedStatement
   extends AutoClosable,
@@ -51,9 +53,11 @@ export interface JavaPgqlPreparedStatement
 export class PgqlPreparedStatement implements AutoClosable, AutoCloseableSync {
   private static TIMESTAMP_FORMAT: string = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
   private readonly internalObj: JavaPgqlPreparedStatement
+  private readonly pgql: string
 
-  constructor(pstmt: JavaPgqlPreparedStatement) {
+  constructor(pstmt: JavaPgqlPreparedStatement, pgql: string) {
     this.internalObj = pstmt
+    this.pgql = pgql
   }
 
   getBatchSize(): number {
@@ -80,8 +84,14 @@ export class PgqlPreparedStatement implements AutoClosable, AutoCloseableSync {
     this.internalObj.setFetchSizeSync(fetchSize)
   }
 
-  cancel(): Promise<void> {
-    return this.internalObj.cancel()
+  async cancel(): Promise<void> {
+    return this.internalObj.cancel().catch((error: Error) => {
+      if (LOGGER.isErrorEnabledSync()) {
+        LOGGER.errorSync(`PgqlPreparedStatement#cancel: ${error.message}`)
+      }
+
+      throw new PgqlError(error.message)
+    })
   }
 
   closeSync(): void {
@@ -89,11 +99,26 @@ export class PgqlPreparedStatement implements AutoClosable, AutoCloseableSync {
   }
 
   async close(): Promise<void> {
-    return this.internalObj.close()
+    return this.internalObj.close().catch((error: Error) => {
+      if (LOGGER.isErrorEnabledSync()) {
+        LOGGER.errorSync(`PgqlPreparedStatement#close: ${error.message}`)
+      }
+      throw new PgqlError(error.message)
+    })
   }
 
   async execute(): Promise<boolean> {
-    return this.internalObj.execute()
+    return this.internalObj.execute().catch((error: Error) => {
+      if (LOGGER.isErrorEnabledSync()) {
+        LOGGER.errorSync(
+          `PgqlPreparedStatement#execute:
+                PGQL:
+                    ${this.pgql}`,
+        )
+        LOGGER.errorSync(`PgqlPreparedStatement#execute: ${error.message}`)
+      }
+      throw new PgqlError(error.message)
+    })
   }
 
   async executeWithOptions(
@@ -102,16 +127,45 @@ export class PgqlPreparedStatement implements AutoClosable, AutoCloseableSync {
     matchOptions: string,
     options: string,
   ): Promise<boolean> {
-    return this.internalObj.execute(
-      parallel,
-      dynamicSampling,
-      matchOptions,
-      options,
-    )
+    return this.internalObj
+      .execute(parallel, dynamicSampling, matchOptions, options)
+      .catch((error: Error) => {
+        if (LOGGER.isErrorEnabledSync()) {
+          LOGGER.errorSync(
+            `PgqlPreparedStatement#executeWithOptions:
+ parallel: ${parallel}
+ dyanamicSampling: ${dynamicSampling}
+ matchOptions: ${matchOptions}
+ options: ${options}
+ PGQL:
+     ${this.pgql}`,
+          )
+          LOGGER.errorSync(
+            `PgqlPreparedStatement#executeWithOptions: ${error.message}`,
+          )
+        }
+        throw new PgqlError(error.message)
+      })
   }
 
   async executeQuery(): Promise<PgqlResultSet> {
-    const rs: JavaPgqlResultSet = await this.internalObj.executeQuery()
+    const rs: JavaPgqlResultSet = await this.internalObj
+      .executeQuery()
+      .catch((error: Error) => {
+        if (LOGGER.isErrorEnabledSync()) {
+          LOGGER.errorSync(
+            `PgqlPreparedStatement#executeQuery:
+ PGQL:
+     ${this.pgql}`,
+          )
+
+          LOGGER.errorSync(
+            `PgqlPreparedStatement#executeQuery: ${error.message}`,
+          )
+        }
+        throw new PgqlError(error.message)
+      })
+
     return new PgqlResultSet(rs)
   }
 
@@ -122,13 +176,27 @@ export class PgqlPreparedStatement implements AutoClosable, AutoCloseableSync {
     maxResults: number,
     options: string,
   ): Promise<PgqlResultSet> {
-    const rs: JavaPgqlResultSet = await this.internalObj.executeQuery(
-      timeout,
-      parallel,
-      dynamicSampling,
-      maxResults,
-      options,
-    )
+    const rs: JavaPgqlResultSet = await this.internalObj
+      .executeQuery(timeout, parallel, dynamicSampling, maxResults, options)
+      .catch((error: Error) => {
+        if (LOGGER.isErrorEnabledSync()) {
+          LOGGER.errorSync(
+            `PgqlPreparedStatement#executeQueryWithOptions:
+timeout: ${timeout}
+parallel: ${parallel}
+dyanamicSampling: ${dynamicSampling}
+maxResults: ${maxResults}
+options: ${options}
+PGQL:
+    ${this.pgql}`,
+          )
+
+          LOGGER.errorSync(
+            `PgqlPreparedStatement#executeQueryWithOptions: ${error.message}`,
+          )
+        }
+        throw new PgqlError(error.message)
+      })
 
     return new PgqlResultSet(rs)
   }

@@ -4,6 +4,7 @@ import {
   OracleConnectionManager,
 } from './core/Oracle'
 import { PgqlConnection } from './core/PgqlConnection'
+import { PgqlError } from './core/PgqlError'
 import { ISession, Session } from './session'
 
 /**
@@ -74,7 +75,12 @@ export class Pgql implements IPgqlDriver {
 
   async getSession(): Promise<ISession> {
     // TODO: implements Session cache
-    const conn: OracleConnection = await this.coreOracleConnectionManager.getConnection()
+    const conn: OracleConnection = await this.coreOracleConnectionManager
+      .getConnection()
+      .catch((error: Error) => {
+        throw new PgqlError(error.message)
+      })
+
     conn.setAutoCommit(false)
 
     const pgqlConn: PgqlConnection = PgqlConnection.getConnection(conn)

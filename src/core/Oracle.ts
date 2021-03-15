@@ -1,4 +1,6 @@
 import javaNodeApi from './JavaApi'
+import { LOGGER } from './Logger'
+import { PgqlError } from './PgqlError'
 import { AutoClosable, AutoCloseableSync } from './Resource'
 
 const PoolDataSourceFactory = javaNodeApi.import(
@@ -32,7 +34,13 @@ export class OracleConnection implements AutoClosable, AutoCloseableSync {
   }
 
   async close(): Promise<void> {
-    return this.internalObj.close()
+    return this.internalObj.close().catch((error: Error) => {
+      if (LOGGER.isErrorEnabledSync()) {
+        LOGGER.errorSync(`OracleConnection#close: ${error.message}`)
+      }
+
+      throw new PgqlError(error.message)
+    })
   }
 
   isClosed(): boolean {
@@ -58,9 +66,26 @@ export class OracleConnection implements AutoClosable, AutoCloseableSync {
   async executeStatement(sql: string): Promise<void> {
     const stmt = this.internalObj.createStatementSync()
     try {
-      await stmt.execute(sql)
+      await stmt.execute(sql).catch((error: Error) => {
+        if (LOGGER.isErrorEnabledSync()) {
+          LOGGER.errorSync(
+            `OracleConnection#executeStatement:
+sql:
+    ${sql}
+            `,
+          )
+
+          LOGGER.errorSync(
+            `OracleConnection#executeStatement: ${error.message}`,
+          )
+        }
+
+        throw new PgqlError(error.message)
+      })
     } finally {
-      await stmt.closeSync()
+      await stmt.close().catch((error: Error) => {
+        throw new PgqlError(error.message)
+      })
     }
   }
 }
@@ -189,7 +214,16 @@ export class OracleConnectionManager {
   }
 
   async getConnection(): Promise<OracleConnection> {
-    const conn: JavaOracleConnection = await this.pool.getConnection()
+    const conn: JavaOracleConnection = await this.pool
+      .getConnection()
+      .catch((error: Error) => {
+        if (LOGGER.isErrorEnabledSync()) {
+          LOGGER.errorSync(
+            `OracleConnectionManager#getConnection: ${error.message}`,
+          )
+        }
+        throw new PgqlError(error.message)
+      })
     return new OracleConnection(conn)
   }
 }

@@ -10,8 +10,8 @@ const TEST_GRAPH_NAME: string = 'TEST_GRAPH_PGQL_SESSION4'
 describe('Session', (): void => {
   const pgqlInstance: Pgql = Pgql.getInstance(oracleDatabaseConfig)
 
-  beforeAll(() => createGraph(TEST_GRAPH_NAME))
-  afterAll(() => dropGraph(TEST_GRAPH_NAME))
+  beforeAll(async () => await createGraph(TEST_GRAPH_NAME))
+  afterAll(async () => await dropGraph(TEST_GRAPH_NAME))
 
   test('should execute SELECT and INSERT with parameters', async (): Promise<void> => {
     const session: ISession = await pgqlInstance.getSession()

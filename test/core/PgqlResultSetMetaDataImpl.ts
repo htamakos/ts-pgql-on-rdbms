@@ -10,8 +10,8 @@ import * as utils from '../../src/utils'
 const TEST_GRAPH_NAME: string = 'TEST_GRAPH_RESULT_SET_META'
 
 describe('PgqlResultSetMetaDataImpl', (): void => {
-  beforeAll(() => createGraph(TEST_GRAPH_NAME))
-  afterAll(() => dropGraph(TEST_GRAPH_NAME))
+  beforeAll(async () => await createGraph(TEST_GRAPH_NAME))
+  afterAll(async () => await dropGraph(TEST_GRAPH_NAME))
 
   test('should get ResultSet metadata', async (): Promise<void> => {
     await executeQueryTest(async (pgqlConn: PgqlConnection) => {

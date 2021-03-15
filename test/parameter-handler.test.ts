@@ -11,8 +11,8 @@ const TEST_GRAPH_NAME: string = 'TEST_GRAPH_RESULT_HANDLER'
 describe('ParameterHandler', (): void => {
   const parameterHandler: IParameterHandler = new ParameterHandler()
 
-  beforeAll(() => createGraph(TEST_GRAPH_NAME))
-  afterAll(() => dropGraph(TEST_GRAPH_NAME))
+  beforeAll(async () => await createGraph(TEST_GRAPH_NAME))
+  afterAll(async () => await dropGraph(TEST_GRAPH_NAME))
 
   test('should handle parameters', async (): Promise<void> => {
     await executeQueryTest(async (pgqlConn: PgqlConnection) => {
