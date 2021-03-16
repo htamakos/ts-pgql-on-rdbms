@@ -1,0 +1,7 @@
+{
+  "entryPoints": ["./src/index.ts"],
+  "out": "doc",
+  "excludeExternals": true,
+  "exclude": "test/*",
+  "tsconfig": "tsconfig.json"
+}
