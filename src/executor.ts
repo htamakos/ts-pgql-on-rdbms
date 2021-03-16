@@ -49,6 +49,7 @@ abstract class AbstractExecutor
 
   abstract getPreparedStatement(pgql: string): Promise<PgqlPreparedStatement>
   abstract closePrepareStatement(pstmt: PgqlPreparedStatement): void
+  abstract getCacheSize(): number
 
   constructor(pgqlConn: PgqlConnection) {
     this.pgqlConn = pgqlConn
@@ -160,6 +161,10 @@ export class SimpleExecutor extends AbstractExecutor {
   closeSync(): void {
     // noop
   }
+
+  getCacheSize(): number {
+    return 0
+  }
 }
 
 /**
@@ -199,6 +204,10 @@ export class ReuseExecutor extends AbstractExecutor {
     }
 
     this._cache.clear()
+  }
+
+  getCacheSize(): number {
+    return this._cache.size()
   }
 }
 

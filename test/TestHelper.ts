@@ -18,9 +18,9 @@ const testDbConfig: OracleConfig = new OracleConfigBuilder()
 
 const oraclePoolConfig: pgql.IOraclePoolConfig = {
   poolName: 'pool2',
-  initialPoolSize: 1,
-  minPoolSize: 1,
-  maxPoolSize: 1,
+  initialPoolSize: 4,
+  minPoolSize: 4,
+  maxPoolSize: 4,
   timeoutCheckInteraval: 5,
   inactiveConnectionTimeout: 60,
 }
