@@ -53,13 +53,22 @@ export async function createGraph(graphName: string): Promise<void> {
     })
 
     // For prevent occuring bag related to TTP with PARALLEL
-    ;['XDE$', 'XDG$', 'XQD$', 'XQE$', 'XQG$', 'XQV$', 'XSE$', 'XSG$'].forEach(
-      async (postFix) => {
-        await conn.executeStatement(`
+    const pgSchemaIndexNamePostfixes: string[] = [
+      'XDE$',
+      'XDG$',
+      'XQD$',
+      'XQE$',
+      'XQG$',
+      'XQV$',
+      'XSE$',
+      'XSG$',
+    ]
+
+    pgSchemaIndexNamePostfixes.forEach(async (postFix) => {
+      await conn.executeStatement(`
         ALTER INDEX ${graphName}${postFix} noparallel
       `)
-      },
-    )
+    })
 
     // insert Data
     const insertPstmt: PgqlPreparedStatement = await pgqlConn.prepareStatement(`
