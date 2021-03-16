@@ -1,5 +1,8 @@
 import javaNodeApi from './JavaApi'
 
+/**
+ * @category Core-api
+ */
 interface JavaPgDatatypeConstants {
   TYPE_DT_LONG: number
   TYPE_DT_STRING: number
@@ -10,6 +13,10 @@ interface JavaPgDatatypeConstants {
   TYPE_DT_DATE: number
 }
 
+/**
+ *
+ * @category core-api
+ */
 export const PgDatatypeConstants: JavaPgDatatypeConstants = javaNodeApi.import(
   'oracle.pg.rdbms.pgql.PgDatatypeConstants',
 )

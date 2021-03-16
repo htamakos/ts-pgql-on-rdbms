@@ -12,6 +12,10 @@ const javaPgqlConnection = javaNodeApi.import(
   'oracle.pg.rdbms.pgql.PgqlConnection',
 )
 
+/**
+ * @internal
+ * @category core-api
+ */
 export interface JavaPgqlConnection {
   getGraphSync(): string
   setGraphSync(graph: string): void
@@ -22,6 +26,9 @@ export interface JavaPgqlConnection {
   createStatement(): Promise<JavaPgqlStatement>
 }
 
+/**
+ * @category core-api
+ */
 export class PgqlConnection {
   private readonly pgqlConn: JavaPgqlConnection
 

@@ -3,6 +3,8 @@
 
 /**
  * TODO: document comment
+ *
+ * @category wrapper-api
  */
 export interface IOptions {
   readonly parallel: number
@@ -13,6 +15,10 @@ export interface IOptions {
 
 /**
  * TODO: document comment
+ *
+ * @internal
+ * @category wrapper-api
+ *
  */
 export const DEFAULT_OPTIONS: IOptions = {
   parallel: 0,

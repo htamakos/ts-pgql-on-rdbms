@@ -1,7 +1,12 @@
 {
-  "entryPoints": ["./src/index.ts"],
+  "entryPoints": [
+    "./src/index.ts",
+    "./src/core/core-api-private.ts",
+    "./src/wrapper-api-private.ts"
+  ],
   "out": "doc",
-  "excludeExternals": true,
+  "excludeExternals": false,
+  "excludeInternal": false,
   "exclude": "test/*",
   "tsconfig": "tsconfig.json"
 }

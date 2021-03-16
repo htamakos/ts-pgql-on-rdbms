@@ -1,5 +1,10 @@
 import { PgqlType } from './types'
 
+/**
+ * TODO: document comment
+ *
+ * @category wrapper-api
+ */
 export interface IRecord {
   columns(): IterableIterator<string>
   values(): IterableIterator<PgqlType>
@@ -7,6 +12,12 @@ export interface IRecord {
   get(column: string): PgqlType
 }
 
+/**
+ * TODO: document comment
+ *
+ * @internal
+ * @category wrapper-api
+ */
 export class Record implements IRecord {
   private readonly _dict: { [column: string]: PgqlType }
 

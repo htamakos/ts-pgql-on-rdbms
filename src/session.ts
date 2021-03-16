@@ -17,6 +17,8 @@ import { IResultHanlder, ResultHanlder } from './result-handler'
 
 /**
  * TODO: document comment
+ *
+ * @category wrapper-api
  */
 export interface ISession extends AutoClosable, AutoCloseableSync {
   readonly pgqlConn: PgqlConnection
@@ -39,6 +41,9 @@ export interface ISession extends AutoClosable, AutoCloseableSync {
 
 /**
  * TBD: document comment
+ *
+ * @internal
+ * @category wrapper-api
  */
 export class Session implements ISession {
   readonly pgqlConn: PgqlConnection

@@ -6,10 +6,20 @@ import { IResult, Result } from './result'
 import { PgqlType } from './types'
 import * as utils from './utils'
 
+/**
+ * @internal
+ * @category wrapper-api
+ *
+ */
 export interface IResultHanlder {
   handle(rs: PgqlResultSet): Promise<IResult>
 }
 
+/**
+ * @internal
+ * @category wrapper-api
+ *
+ */
 export class ResultHanlder implements IResultHanlder {
   private getColumnNames(
     meta: PgqlResultSetMetaDataImpl,

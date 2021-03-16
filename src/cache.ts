@@ -1,3 +1,7 @@
+/**
+ * @internal
+ * @category wrapper-api
+ */
 export interface ICache<T> {
   get(key: string): T | undefined
   set(key: string, value: T): void
@@ -7,6 +11,10 @@ export interface ICache<T> {
   clear(): void
 }
 
+/**
+ * @internal
+ * @category wrapper-api
+ */
 export class SimpleLruCache<T> implements ICache<T> {
   private static DEFAULT_MAX_ENTRY_SIZE: number = 1000
   private _cache: Map<string, T> = new Map<string, T>()

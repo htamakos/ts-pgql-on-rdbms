@@ -1,7 +1,9 @@
 /**
- * TODO: document comment
+ * Type name in PGQL on RDBMS
+ *
+ * @internal
+ * @category wrapper-api
  */
-// Type name in PGQL on RDBMS
 type PgqlTypeName =
   | 'string'
   | 'int'
@@ -12,9 +14,10 @@ type PgqlTypeName =
   | 'timestamp'
 
 /**
- * TODO: document comment
+ * TypeScript Type in PGQL
+ *
+ * @category wrapper-api
  */
-// TypeScript Type in PGQL
 type PgqlType = string | number | boolean | Date | null
 
 export { PgqlTypeName, PgqlType }

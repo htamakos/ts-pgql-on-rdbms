@@ -3,6 +3,10 @@ import { PgqlError } from './PgqlError'
 import { JavaPgqlResultSet, PgqlResultSet } from './PgqlResultSet'
 import { AutoClosable, AutoCloseableSync } from './Resource'
 
+/**
+ * @internal
+ * @category core-api
+ */
 export interface JavaPgqlStatement extends AutoClosable, AutoCloseableSync {
   getBatchSizeSync(): number
   getFetchSizeSync(): number
@@ -35,6 +39,9 @@ export interface JavaPgqlStatement extends AutoClosable, AutoCloseableSync {
   ): Promise<JavaPgqlResultSet>
 }
 
+/**
+ * @category core-api
+ */
 export class PgqlStatement implements AutoClosable, AutoCloseableSync {
   private readonly internalObj: JavaPgqlStatement
 

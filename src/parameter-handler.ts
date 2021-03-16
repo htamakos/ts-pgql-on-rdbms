@@ -3,6 +3,9 @@ import { IParameter, IParameters } from './parameter'
 
 /**
  * TODO: document comment
+ *
+ * @internal
+ * @category wrapper-api
  */
 export interface IParameterHandler {
   setParameters(pstmt: PgqlPreparedStatement, parameters?: IParameters): void
@@ -10,6 +13,9 @@ export interface IParameterHandler {
 
 /**
  * TODO: document comment
+ *
+ * @internal
+ * @category wrapper-api
  */
 export class ParameterHandler implements IParameterHandler {
   setParameters(pstmt: PgqlPreparedStatement, parameters?: IParameters): void {

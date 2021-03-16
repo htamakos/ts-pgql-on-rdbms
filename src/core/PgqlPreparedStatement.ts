@@ -10,6 +10,10 @@ import javaNodeApi from './JavaApi'
 import { PgqlError } from './PgqlError'
 import { LOGGER } from './Logger'
 
+/**
+ * @internal
+ * @category core-api
+ */
 export interface JavaPgqlPreparedStatement
   extends AutoClosable,
     AutoCloseableSync {
@@ -50,6 +54,9 @@ export interface JavaPgqlPreparedStatement
   setTimestampSync(parameterIndex: number, x: LocalDateTime): void
 }
 
+/**
+ * @category core-api
+ */
 export class PgqlPreparedStatement implements AutoClosable, AutoCloseableSync {
   private static TIMESTAMP_FORMAT: string = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
   private readonly internalObj: JavaPgqlPreparedStatement

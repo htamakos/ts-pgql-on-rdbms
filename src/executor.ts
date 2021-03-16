@@ -12,6 +12,8 @@ import { IResultHanlder } from './result-handler'
 
 /**
  * TODO: document comment
+ *
+ * @category wrapper-api
  */
 export interface IExecutor extends AutoClosable, AutoCloseableSync {
   readonly pgqlConn: PgqlConnection
@@ -137,6 +139,10 @@ abstract class AbstractExecutor
 
 /**
  * TODO: document comment
+ *
+ * @internal
+ * @category wrapper-api
+ *
  */
 export class SimpleExecutor extends AbstractExecutor {
   async getPreparedStatement(pgql: string): Promise<PgqlPreparedStatement> {
@@ -158,6 +164,10 @@ export class SimpleExecutor extends AbstractExecutor {
 
 /**
  * TODO: document comment
+ *
+ * @internal
+ * @category wrapper-api
+ *
  */
 export class ReuseExecutor extends AbstractExecutor {
   readonly _cache: ICache<PgqlPreparedStatement> = new SimpleLruCache<PgqlPreparedStatement>()
@@ -192,5 +202,14 @@ export class ReuseExecutor extends AbstractExecutor {
   }
 }
 
+/**
+ * @internal
+ * @category wrapper-api
+ */
 export type ExecutorType = 'SIMPLE' | 'REUSE'
+
+/**
+ * @internal
+ * @category wrapper-api
+ */
 export const DEFAULT_EXECUTOR_TYPE: ExecutorType = 'REUSE'

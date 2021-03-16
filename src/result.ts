@@ -2,6 +2,8 @@ import { IRecord } from './record'
 
 /**
  * TODO: document comment
+ *
+ * @category wrapper-api
  */
 export interface IResult {
   readonly records: IRecord[]
@@ -9,6 +11,9 @@ export interface IResult {
 
 /**
  * TODO: document comment
+ *
+ * @internal
+ * @category wrapper-api
  */
 export class Result implements IResult {
   readonly records: IRecord[]

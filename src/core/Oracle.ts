@@ -7,6 +7,10 @@ const PoolDataSourceFactory = javaNodeApi.import(
   'oracle.ucp.jdbc.PoolDataSourceFactory',
 )
 
+/**
+ * @internal
+ * @category core-api
+ */
 export interface JavaOracleConnection extends AutoClosable, AutoCloseableSync {
   closeSync(): void
   close(): Promise<void>
@@ -18,6 +22,9 @@ export interface JavaOracleConnection extends AutoClosable, AutoCloseableSync {
   rollbackSync(): void
 }
 
+/**
+ * @category core-api
+ */
 export class OracleConnection implements AutoClosable, AutoCloseableSync {
   private readonly internalObj: JavaOracleConnection
 
@@ -104,6 +111,9 @@ interface IPoolDataSource {
   setInactiveConnectionTimeoutSync(inactiveConnectionTimeout: number): void
 }
 
+/**
+ * @category core-api
+ */
 export interface OracleConfig {
   url: string
   user: string
@@ -116,6 +126,9 @@ export interface OracleConfig {
   inactiveConnectionTimeout: number
 }
 
+/**
+ * @category core-api
+ */
 export class OracleConfigBuilder {
   private readonly _config: OracleConfig
 
@@ -183,6 +196,9 @@ export class OracleConfigBuilder {
   }
 }
 
+/**
+ * @category core-api
+ */
 export class OracleConnectionManager {
   static CONN_FACTORY_CLASS_NAME: string = 'oracle.jdbc.pool.OracleDataSource'
   private pool: IPoolDataSource

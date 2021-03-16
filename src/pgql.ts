@@ -9,6 +9,8 @@ import { ISession, Session } from './session'
 
 /**
  * TODO: document comment
+ *
+ * @category wrapper-api
  */
 export interface IOraclePoolConfig {
   poolName: string
@@ -21,6 +23,8 @@ export interface IOraclePoolConfig {
 
 /**
  * TODO: document comment
+ *
+ * @category wrapper-api
  */
 export interface IOracleDatabaseConfig {
   readonly jdbcUrl: string
@@ -31,6 +35,8 @@ export interface IOracleDatabaseConfig {
 
 /**
  * TODO: document comment
+ *
+ * @category wrapper-api
  */
 interface IPgqlDriver {
   readonly coreOracleConnectionManager: OracleConnectionManager
@@ -39,6 +45,8 @@ interface IPgqlDriver {
 
 /**
  * TBD: document comment
+ *
+ * @category wrapper-api
  */
 export class Pgql implements IPgqlDriver {
   private static instance?: Pgql = undefined

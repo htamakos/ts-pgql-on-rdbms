@@ -7,6 +7,10 @@ import {
 import { PgqlError } from './PgqlError'
 import { LOGGER } from './Logger'
 
+/**
+ * @internal
+ * @category core-api
+ */
 export interface JavaPgqlResultSet extends AutoClosable, AutoCloseableSync {
   closeSync(): void
   close(): Promise<void>
@@ -27,6 +31,9 @@ export interface JavaPgqlResultSet extends AutoClosable, AutoCloseableSync {
   getValueTypeSync(elementIdx: number): number
 }
 
+/**
+ * @category core-api
+ */
 export class PgqlResultSet implements AutoClosable, AutoCloseableSync {
   private readonly internalObj: JavaPgqlResultSet
 
