@@ -84,6 +84,10 @@ export class PgqlPreparedStatement implements AutoClosable, AutoCloseableSync {
     this.internalObj.setFetchSizeSync(fetchSize)
   }
 
+  getPgqlStatement(): string {
+    return this.pgql
+  }
+
   async cancel(): Promise<void> {
     return this.internalObj.cancel().catch((error: Error) => {
       if (LOGGER.isErrorEnabledSync()) {

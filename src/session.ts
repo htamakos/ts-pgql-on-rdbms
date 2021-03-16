@@ -2,7 +2,13 @@ import { OracleConnection } from './core/Oracle'
 import { PgqlConnection } from './core/PgqlConnection'
 import { PgqlError } from './core/PgqlError'
 import { AutoClosable, AutoCloseableSync } from './core/Resource'
-import { Executor, IExecutor } from './executor'
+import {
+  SimpleExecutor,
+  ReuseExecutor,
+  ExecutorType,
+  DEFAULT_EXECUTOR_TYPE,
+  IExecutor,
+} from './executor'
 import { IOptions } from './option'
 import { IParameters } from './parameter'
 import { IParameterHandler, ParameterHandler } from './parameter-handler'
@@ -40,20 +46,33 @@ export class Session implements ISession {
   readonly resultHandler: IResultHanlder
   readonly executor: IExecutor
 
-  constructor(pgqlConn: PgqlConnection) {
+  constructor(
+    pgqlConn: PgqlConnection,
+    executorType: ExecutorType = DEFAULT_EXECUTOR_TYPE,
+  ) {
     this.pgqlConn = pgqlConn
     this.parameterHandler = new ParameterHandler()
     this.resultHandler = new ResultHanlder()
-    this.executor = new Executor()
+
+    switch (executorType) {
+      case 'REUSE':
+        this.executor = new ReuseExecutor(pgqlConn)
+        break
+      case 'SIMPLE':
+        this.executor = new SimpleExecutor(pgqlConn)
+        break
+      default:
+        throw new PgqlError(`unknown ExecutorType: ${executorType}`)
+    }
   }
 
   async close(): Promise<void> {
-    // TODO: implements close PgqlPreparedStatement cache
+    await this.executor.close()
     await this.pgqlConn.getJdbcConnection().close()
   }
 
   closeSync(): void {
-    // TODO: implements close PgqlPreparedStatement cache
+    this.executor.closeSync()
     this.pgqlConn.getJdbcConnection().closeSync()
   }
 
@@ -67,7 +86,6 @@ export class Session implements ISession {
   ): Promise<IResult> {
     const result: IResult = await this.executor
       .query(
-        this.pgqlConn,
         pgql,
         this.parameterHandler,
         this.resultHandler,
@@ -90,7 +108,7 @@ export class Session implements ISession {
     options?: IOptions,
   ): Promise<boolean> {
     return await this.executor
-      .modify(this.pgqlConn, pgql, this.parameterHandler, parameters, options)
+      .modify(pgql, this.parameterHandler, parameters, options)
       .catch((error: Error) => {
         throw new PgqlError(error.message)
       })
