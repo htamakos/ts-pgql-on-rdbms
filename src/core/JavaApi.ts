@@ -40,11 +40,17 @@ WARNING: All illegal access operations will be denied in a future release
 */
 javaNodeApi.options.push('--add-opens=java.base/java.lang=ALL-UNNAMED')
 
-javaNodeApi.callStaticMethodSync(
-  'java.lang.System',
-  'setProperty',
-  'log4j.configurationFile',
-  `${PGX_CLASSPATH}/log4j2.xml`,
-)
+const log4j2ConfigPath: string = `${PGX_CLASSPATH}/log4j2.xml`
+if (
+  fs.existsSync(log4j2ConfigPath) === true &&
+  fs.statSync(log4j2ConfigPath).isFile() === true
+) {
+  javaNodeApi.callStaticMethodSync(
+    'java.lang.System',
+    'setProperty',
+    'log4j.configurationFile',
+    log4j2ConfigPath,
+  )
+}
 
 export default javaNodeApi
