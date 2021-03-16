@@ -1,7 +1,9 @@
+import { ICache, SimpleLruCache } from './cache'
 import { PgqlConnection } from './core/PgqlConnection'
 import { PgqlError } from './core/PgqlError'
 import { PgqlPreparedStatement } from './core/PgqlPreparedStatement'
 import { PgqlResultSet } from './core/PgqlResultSet'
+import { AutoClosable, AutoCloseableSync } from './core/Resource'
 import { DEFAULT_OPTIONS, IOptions } from './option'
 import { IParameters } from './parameter'
 import { IParameterHandler } from './parameter-handler'
@@ -11,12 +13,13 @@ import { IResultHanlder } from './result-handler'
 /**
  * TODO: document comment
  */
-export interface IExecutor {
+export interface IExecutor extends AutoClosable, AutoCloseableSync {
+  readonly pgqlConn: PgqlConnection
+
   /**
    * TODO: document comment
    */
   query(
-    pgqlConn: PgqlConnection,
     pgql: string,
     parameterHandler: IParameterHandler,
     resultHandler: IResultHanlder,
@@ -28,7 +31,6 @@ export interface IExecutor {
    * TODO: document comment
    */
   modify(
-    pgqlConn: PgqlConnection,
     pgql: string,
     parameterHandler: IParameterHandler,
     parameters?: IParameters,
@@ -39,12 +41,21 @@ export interface IExecutor {
 /**
  * TODO: document comment
  */
-export class Executor implements IExecutor {
+abstract class AbstractExecutor
+  implements IExecutor, AutoClosable, AutoCloseableSync {
+  readonly pgqlConn: PgqlConnection
+
+  abstract getPreparedStatement(pgql: string): Promise<PgqlPreparedStatement>
+  abstract closePrepareStatement(pstmt: PgqlPreparedStatement): void
+
+  constructor(pgqlConn: PgqlConnection) {
+    this.pgqlConn = pgqlConn
+  }
+
   /**
    * TODO: document comment
    */
   async query(
-    pgqlConn: PgqlConnection,
     pgql: string,
     parameterHandler: IParameterHandler,
     resultHandler: IResultHanlder,
@@ -52,7 +63,7 @@ export class Executor implements IExecutor {
     options?: IOptions,
   ): Promise<IResult> {
     // TODO: implements PreparedStatement cache
-    const pstmt: PgqlPreparedStatement = await pgqlConn.prepareStatement(pgql)
+    const pstmt: PgqlPreparedStatement = await this.getPreparedStatement(pgql)
     let rs: PgqlResultSet | undefined = undefined
     try {
       parameterHandler.setParameters(pstmt, parameters)
@@ -80,7 +91,7 @@ export class Executor implements IExecutor {
         rs.closeSync()
       }
       if (pstmt !== undefined && pstmt !== null) {
-        pstmt.closeSync()
+        this.closePrepareStatement(pstmt)
       }
     }
   }
@@ -89,14 +100,13 @@ export class Executor implements IExecutor {
    * TODO: document comment
    */
   async modify(
-    pgqlConn: PgqlConnection,
     pgql: string,
     parameterHandler: IParameterHandler,
     parameters?: IParameters,
     options?: IOptions,
   ): Promise<boolean> {
     // TODO: implements PreparedStatement cache
-    const pstmt: PgqlPreparedStatement = await pgqlConn.prepareStatement(pgql)
+    const pstmt: PgqlPreparedStatement = await this.getPreparedStatement(pgql)
 
     try {
       parameterHandler.setParameters(pstmt, parameters)
@@ -116,8 +126,71 @@ export class Executor implements IExecutor {
         })
     } finally {
       if (pstmt !== undefined && pstmt !== null) {
-        pstmt.closeSync()
+        this.closePrepareStatement(pstmt)
       }
     }
   }
+
+  abstract close(): Promise<void>
+  abstract closeSync(): void
 }
+
+/**
+ * TODO: document comment
+ */
+export class SimpleExecutor extends AbstractExecutor {
+  async getPreparedStatement(pgql: string): Promise<PgqlPreparedStatement> {
+    return this.pgqlConn.prepareStatement(pgql)
+  }
+
+  closePrepareStatement(pstmt: PgqlPreparedStatement): void {
+    pstmt.closeSync()
+  }
+
+  async close(): Promise<void> {
+    // noop
+  }
+
+  closeSync(): void {
+    // noop
+  }
+}
+
+/**
+ * TODO: document comment
+ */
+export class ReuseExecutor extends AbstractExecutor {
+  readonly _cache: ICache<PgqlPreparedStatement> = new SimpleLruCache<PgqlPreparedStatement>()
+
+  async getPreparedStatement(pgql: string): Promise<PgqlPreparedStatement> {
+    const pstmt: PgqlPreparedStatement = this._cache.hasKey(pgql)
+      ? this._cache.get(pgql)!
+      : await this.pgqlConn.prepareStatement(pgql)
+
+    return pstmt
+  }
+
+  closePrepareStatement(pstmt: PgqlPreparedStatement) {
+    // Store PreparedStatement to cache due to reuse
+    this._cache.set(pstmt.getPgqlStatement(), pstmt)
+  }
+
+  async close(): Promise<void> {
+    for (const v of this._cache.values()) {
+      await v.close()
+    }
+
+    this._cache.clear()
+  }
+
+  closeSync(): void {
+    for (const v of this._cache.values()) {
+      v.closeSync()
+    }
+
+    this._cache.clear()
+  }
+}
+
+export type ExecutorType = 'SIMPLE' | 'REUSE'
+export const DEFAULT_EXECUTOR_TYPE: ExecutorType = 'REUSE'

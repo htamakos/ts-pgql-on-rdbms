@@ -6,7 +6,7 @@ import { IParameters } from '../src/parameter'
 import { IParameterHandler, ParameterHandler } from '../src/parameter-handler'
 import { createGraph, dropGraph, executeQueryTest } from './TestHelper'
 
-const TEST_GRAPH_NAME: string = 'TEST_GRAPH_RESULT_HANDLER'
+const TEST_GRAPH_NAME: string = 'TEST_GRAPH_PARAMETER_HANDLER'
 
 describe('ParameterHandler', (): void => {
   const parameterHandler: IParameterHandler = new ParameterHandler()
