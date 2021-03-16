@@ -4,7 +4,7 @@ interface ILoggerFactory {
   getLoggerSync(name: string): ILogger
 }
 
-interface ILogger {
+export interface ILogger {
   debugSync(msg: string): void
   infoSync(msg: string): void
   errorSync(msg: string): void
