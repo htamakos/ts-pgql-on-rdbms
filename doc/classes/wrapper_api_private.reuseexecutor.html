@@ -115,6 +115,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="wrapper_api_private.reuseexecutor.html#close" class="tsd-kind-icon">close</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="wrapper_api_private.reuseexecutor.html#closepreparestatement" class="tsd-kind-icon">close<wbr>Prepare<wbr>Statement</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="wrapper_api_private.reuseexecutor.html#closesync" class="tsd-kind-icon">close<wbr>Sync</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="wrapper_api_private.reuseexecutor.html#getcachesize" class="tsd-kind-icon">get<wbr>Cache<wbr>Size</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="wrapper_api_private.reuseexecutor.html#getpreparedstatement" class="tsd-kind-icon">get<wbr>Prepared<wbr>Statement</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="wrapper_api_private.reuseexecutor.html#modify" class="tsd-kind-icon">modify</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="wrapper_api_private.reuseexecutor.html#query" class="tsd-kind-icon">query</a></li>
@@ -136,7 +137,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from AbstractExecutor.constructor</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/htamakos/ts-pgql-on-rdbms/blob/04b02db/src/executor.ts#L51">src/executor.ts:51</a></li>
+									<li>Defined in <a href="https://github.com/htamakos/ts-pgql-on-rdbms/blob/d4115e3/src/executor.ts#L52">src/executor.ts:52</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -158,7 +159,7 @@
 					<div class="tsd-signature tsd-kind-icon">_cache<span class="tsd-signature-symbol">:</span> <a href="../interfaces/wrapper_api_private.icache.html" class="tsd-signature-type" data-tsd-kind="Interface">ICache</a><span class="tsd-signature-symbol">&lt;</span><a href="index.pgqlpreparedstatement.html" class="tsd-signature-type" data-tsd-kind="Class">PgqlPreparedStatement</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = ...</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/htamakos/ts-pgql-on-rdbms/blob/04b02db/src/executor.ts#L173">src/executor.ts:173</a></li>
+							<li>Defined in <a href="https://github.com/htamakos/ts-pgql-on-rdbms/blob/d4115e3/src/executor.ts#L178">src/executor.ts:178</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -169,7 +170,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from AbstractExecutor.pgqlConn</p>
 						<ul>
-							<li>Defined in <a href="https://github.com/htamakos/ts-pgql-on-rdbms/blob/04b02db/src/executor.ts#L48">src/executor.ts:48</a></li>
+							<li>Defined in <a href="https://github.com/htamakos/ts-pgql-on-rdbms/blob/d4115e3/src/executor.ts#L48">src/executor.ts:48</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -187,7 +188,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides AbstractExecutor.close</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/htamakos/ts-pgql-on-rdbms/blob/04b02db/src/executor.ts#L188">src/executor.ts:188</a></li>
+									<li>Defined in <a href="https://github.com/htamakos/ts-pgql-on-rdbms/blob/d4115e3/src/executor.ts#L193">src/executor.ts:193</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -205,7 +206,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides AbstractExecutor.closePrepareStatement</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/htamakos/ts-pgql-on-rdbms/blob/04b02db/src/executor.ts#L183">src/executor.ts:183</a></li>
+									<li>Defined in <a href="https://github.com/htamakos/ts-pgql-on-rdbms/blob/d4115e3/src/executor.ts#L188">src/executor.ts:188</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -229,10 +230,28 @@
 							<aside class="tsd-sources">
 								<p>Overrides AbstractExecutor.closeSync</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/htamakos/ts-pgql-on-rdbms/blob/04b02db/src/executor.ts#L196">src/executor.ts:196</a></li>
+									<li>Defined in <a href="https://github.com/htamakos/ts-pgql-on-rdbms/blob/d4115e3/src/executor.ts#L201">src/executor.ts:201</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<a name="getcachesize" class="tsd-anchor"></a>
+					<h3>get<wbr>Cache<wbr>Size</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Cache<wbr>Size<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Overrides AbstractExecutor.getCacheSize</p>
+								<ul>
+									<li>Defined in <a href="https://github.com/htamakos/ts-pgql-on-rdbms/blob/d4115e3/src/executor.ts#L209">src/executor.ts:209</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -247,7 +266,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides AbstractExecutor.getPreparedStatement</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/htamakos/ts-pgql-on-rdbms/blob/04b02db/src/executor.ts#L175">src/executor.ts:175</a></li>
+									<li>Defined in <a href="https://github.com/htamakos/ts-pgql-on-rdbms/blob/d4115e3/src/executor.ts#L180">src/executor.ts:180</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -271,7 +290,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from AbstractExecutor.modify</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/htamakos/ts-pgql-on-rdbms/blob/04b02db/src/executor.ts#L104">src/executor.ts:104</a></li>
+									<li>Defined in <a href="https://github.com/htamakos/ts-pgql-on-rdbms/blob/d4115e3/src/executor.ts#L105">src/executor.ts:105</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -309,7 +328,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from AbstractExecutor.query</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/htamakos/ts-pgql-on-rdbms/blob/04b02db/src/executor.ts#L60">src/executor.ts:60</a></li>
+									<li>Defined in <a href="https://github.com/htamakos/ts-pgql-on-rdbms/blob/d4115e3/src/executor.ts#L61">src/executor.ts:61</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -403,6 +422,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
 								<a href="wrapper_api_private.reuseexecutor.html#closesync" class="tsd-kind-icon">close<wbr>Sync</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="wrapper_api_private.reuseexecutor.html#getcachesize" class="tsd-kind-icon">get<wbr>Cache<wbr>Size</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
 								<a href="wrapper_api_private.reuseexecutor.html#getpreparedstatement" class="tsd-kind-icon">get<wbr>Prepared<wbr>Statement</a>
