@@ -1,3 +1,4 @@
+import { LocalDateTime } from '../../src/core/JavaStandardType'
 import { PgqlConnection } from '../../src/core/PgqlConnection'
 import { PgqlPreparedStatement } from '../../src/core/PgqlPreparedStatement'
 import { PgqlResultSet } from '../../src/core/PgqlResultSet'
@@ -20,7 +21,7 @@ describe('PgqlPreparedStatement', (): void => {
       const floatPropValue: number = 10
       const doublePropValue: number = 0.001
       const booleanPropValue: boolean = false
-      const timestampValue: Date = new Date()
+      const timestampValue: LocalDateTime = LocalDateTime.now()
 
       const insertPstmt = await pgqlConn.prepareStatement(`
             INSERT INTO ${TEST_GRAPH_NAME}
@@ -90,9 +91,9 @@ describe('PgqlPreparedStatement', (): void => {
               expect(rs.getFloat('FLOAT_PROP')).toBe(floatPropValue)
               expect(rs.getDouble('DOUBLE_PROP')).toBe(doublePropValue)
               expect(rs.getBoolean('BOOLEAN_PROP')).toBe(booleanPropValue)
-              expect(rs.getTimestamp('TIMESTAMP_PROP')).toStrictEqual(
-                timestampValue,
-              )
+              expect(
+                rs.getTimestamp('TIMESTAMP_PROP')!.toString(),
+              ).toStrictEqual(timestampValue.toString())
               isFound = true
             }
 
@@ -112,7 +113,7 @@ describe('PgqlPreparedStatement', (): void => {
       const floatPropValue: number = 10
       const doublePropValue: number = 0.001
       const booleanPropValue: boolean = false
-      const timestampValue: Date = new Date()
+      const timestampValue: LocalDateTime = LocalDateTime.now()
 
       const updatePstmt = await pgqlConn.prepareStatement(`
         UPDATE v SET (
@@ -170,9 +171,9 @@ describe('PgqlPreparedStatement', (): void => {
               expect(rs.getFloat('FLOAT_PROP')).toBe(floatPropValue)
               expect(rs.getDouble('DOUBLE_PROP')).toBe(doublePropValue)
               expect(rs.getBoolean('BOOLEAN_PROP')).toBe(booleanPropValue)
-              expect(rs.getTimestamp('TIMESTAMP_PROP')).toStrictEqual(
-                timestampValue,
-              )
+              expect(
+                rs.getTimestamp('TIMESTAMP_PROP')!.toString(),
+              ).toStrictEqual(timestampValue.toString())
               isFound = true
             }
 

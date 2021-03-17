@@ -1,3 +1,4 @@
+import { LocalDateTime } from './core/JavaStandardType'
 import { PgqlPreparedStatement } from './core/PgqlPreparedStatement'
 import { IParameter, IParameters } from './parameter'
 
@@ -41,7 +42,7 @@ export class ParameterHandler implements IParameterHandler {
             pstmt.setBoolean(p.index, p.value as boolean)
             break
           case 'timestamp':
-            pstmt.setTimestamp(p.index, p.value as Date)
+            pstmt.setTimestamp(p.index, p.value as LocalDateTime)
             break
           default:
             throw new Error(`${p.type} is not valid parameter type.`)

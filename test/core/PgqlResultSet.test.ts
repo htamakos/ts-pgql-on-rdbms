@@ -1,3 +1,4 @@
+import { LocalDateTime } from '../../src/core/JavaStandardType'
 import { PgDatatypeConstants } from '../../src/core/PgDatatypeConstants'
 
 import { PgqlConnection } from '../../src/core/PgqlConnection'
@@ -30,7 +31,10 @@ describe('PgqlResultSet', (): void => {
       const booleanPropValue: boolean = true
       const timestampPropName: string = 'TIMESTAMP_VALUE'
       const timestampStringValue: string = '2018-12-15 10:10:00+00:00'
-      const timestampPropValue: Date = new Date(timestampStringValue)
+      const timestampPropValue: LocalDateTime = LocalDateTime.parseWithFormat(
+        timestampStringValue,
+        'yyyy-MM-dd HH:mm:ss+00:00',
+      )
 
       const pstmt: PgqlPreparedStatement = await pgqlConn.prepareStatement(`
         SELECT
@@ -58,9 +62,9 @@ describe('PgqlResultSet', (): void => {
             expect(rs.getFloat(floatPropName)).toBe(floatPropValue)
             expect(rs.getString(stringPropName)).toStrictEqual(stringPropValue)
             expect(rs.getBoolean(booleanPropName)).toBe(booleanPropValue)
-            expect(rs.getTimestamp(timestampPropName)).toStrictEqual(
-              timestampPropValue,
-            )
+            expect(
+              rs.getTimestamp(timestampPropName)!.toString(),
+            ).toStrictEqual(timestampPropValue.toString())
           }
         })
       })

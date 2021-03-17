@@ -11,6 +11,7 @@ export { PgqlConnection } from './core/PgqlConnection'
 export { PgqlPreparedStatement } from './core/PgqlPreparedStatement'
 export { PgqlResultSet } from './core/PgqlResultSet'
 export { PgqlStatement } from './core/PgqlStatement'
+export { LocalDateTime } from './core/JavaStandardType'
 export { tryWith, tryWithSync } from './core/Resource'
 export { LOGGER, ILogger } from './core/Logger'
 

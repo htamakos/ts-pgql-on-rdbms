@@ -1,3 +1,5 @@
+import { LocalDateTime } from './core/JavaStandardType'
+
 /**
  * Type name in PGQL on RDBMS
  *
@@ -18,6 +20,6 @@ type PgqlTypeName =
  *
  * @category wrapper-api
  */
-type PgqlType = string | number | boolean | Date | null
+type PgqlType = string | number | boolean | LocalDateTime | null
 
 export { PgqlTypeName, PgqlType }

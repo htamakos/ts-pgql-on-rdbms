@@ -123,12 +123,10 @@ export class PgqlResultSet implements AutoClosable, AutoCloseableSync {
     }
   }
 
-  getTimestamp(columnName: string): Date | null {
-    const value: LocalDateTime | null = this.internalObj.getTimestampSync(
-      columnName,
-    )
+  getTimestamp(columnName: string): LocalDateTime | null {
+    const value: any = this.internalObj.getTimestampSync(columnName)
     if (value != null && value != undefined) {
-      return new Date(value.toStringSync())
+      return new LocalDateTime(value)
     } else {
       return null
     }

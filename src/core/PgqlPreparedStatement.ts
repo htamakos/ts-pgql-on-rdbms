@@ -1,9 +1,4 @@
-import {
-  JavaDateTimeFormatter,
-  LocalDateTime,
-  JavaLocalDateTime,
-  JavaTimestamp,
-} from './JavaStandardType'
+import { LocalDateTime, JavaTimestamp } from './JavaStandardType'
 import { JavaPgqlResultSet, PgqlResultSet } from './PgqlResultSet'
 import { AutoClosable, AutoCloseableSync } from './Resource'
 import javaNodeApi from './JavaApi'
@@ -58,7 +53,6 @@ export interface JavaPgqlPreparedStatement
  * @category core-api
  */
 export class PgqlPreparedStatement implements AutoClosable, AutoCloseableSync {
-  private static TIMESTAMP_FORMAT: string = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
   private readonly internalObj: JavaPgqlPreparedStatement
   private readonly pgql: string
 
@@ -235,17 +229,10 @@ PGQL:
     this.internalObj.setStringSync(parameterIndex, x)
   }
 
-  setTimestamp(parameterIndex: number, x: Date): void {
-    const ldt: any = JavaLocalDateTime.parseSync(
-      x.toISOString(),
-      JavaDateTimeFormatter.ofPatternSync(
-        PgqlPreparedStatement.TIMESTAMP_FORMAT,
-      ),
-    )
-
+  setTimestamp(parameterIndex: number, x: LocalDateTime): void {
     this.internalObj.setTimestampSync(
       parameterIndex,
-      JavaTimestamp.valueOfSync(ldt),
+      JavaTimestamp.valueOfSync(x.toRawObject()),
     )
   }
 }

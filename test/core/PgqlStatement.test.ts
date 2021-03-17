@@ -1,3 +1,4 @@
+import { LocalDateTime } from '../../src/core/JavaStandardType'
 import { PgqlConnection } from '../../src/core/PgqlConnection'
 import { PgqlResultSet } from '../../src/core/PgqlResultSet'
 import { PgqlStatement } from '../../src/core/PgqlStatement'
@@ -21,7 +22,10 @@ describe('PgqlStatement', (): void => {
       const doublePropValue: number = 0.001
       const booleanPropValue: boolean = false
       const timestampValueStr: string = '2018-01-15 16:30:00+00:00'
-      const timestampValue: Date = new Date(timestampValueStr)
+      const timestampValue: LocalDateTime = LocalDateTime.parseWithFormat(
+        timestampValueStr,
+        'yyyy-MM-dd HH:mm:ss+00:00',
+      )
 
       const insertPgql: string = `
             INSERT INTO ${TEST_GRAPH_NAME}
@@ -76,8 +80,8 @@ describe('PgqlStatement', (): void => {
             expect(rs.getFloat('FLOAT_PROP')).toBe(floatPropValue)
             expect(rs.getDouble('DOUBLE_PROP')).toBe(doublePropValue)
             expect(rs.getBoolean('BOOLEAN_PROP')).toBe(booleanPropValue)
-            expect(rs.getTimestamp('TIMESTAMP_PROP')).toStrictEqual(
-              timestampValue,
+            expect(rs.getTimestamp('TIMESTAMP_PROP')!.toString()).toStrictEqual(
+              timestampValue.toString(),
             )
             isFound = true
           }
@@ -97,7 +101,10 @@ describe('PgqlStatement', (): void => {
       const doublePropValue: number = 0.001
       const booleanPropValue: boolean = false
       const timestampValueStr: string = '2018-01-15 16:30:00+00:00'
-      const timestampValue: Date = new Date(timestampValueStr)
+      const timestampValue: LocalDateTime = LocalDateTime.parseWithFormat(
+        timestampValueStr,
+        'yyyy-MM-dd HH:mm:ss+00:00',
+      )
 
       const updateStmt: PgqlStatement = await pgqlConn.createStatement()
       const updatePGQL: string = `
@@ -153,8 +160,8 @@ describe('PgqlStatement', (): void => {
             expect(rs.getFloat('FLOAT_PROP')).toBe(floatPropValue)
             expect(rs.getDouble('DOUBLE_PROP')).toBe(doublePropValue)
             expect(rs.getBoolean('BOOLEAN_PROP')).toBe(booleanPropValue)
-            expect(rs.getTimestamp('TIMESTAMP_PROP')).toStrictEqual(
-              timestampValue,
+            expect(rs.getTimestamp('TIMESTAMP_PROP')!.toString()).toStrictEqual(
+              timestampValue.toString(),
             )
             isFound = true
           }

@@ -1,3 +1,4 @@
+import { LocalDateTime } from '../src/core/JavaStandardType'
 import { OracleConnection } from '../src/core/Oracle'
 import { PgqlConnection } from '../src/core/PgqlConnection'
 import { ReuseExecutor, SimpleExecutor } from '../src/executor'
@@ -36,8 +37,10 @@ describe('Executor', (): void => {
       const booleanPropName: string = 'BOOLEAN_PROP'
       const timestampPropName: string = 'TIMESTAMP_PROP'
       const timestampStringValue: string = '2018-12-15 10:10:00+00:00'
-      const timestampPropValue: Date = new Date(timestampStringValue)
-
+      const timestampPropValue: LocalDateTime = LocalDateTime.parseWithFormat(
+        timestampStringValue,
+        'yyyy-MM-dd HH:mm:ss+00:00',
+      )
       const insertPgql: string = `
         INSERT INTO ${TEST_GRAPH_NAME}
           VERTEX v LABELS(${labelValue}) PROPERTIES (
@@ -201,7 +204,10 @@ describe('Executor', (): void => {
       const booleanPropName: string = 'BOOLEAN_PROP'
       const timestampPropName: string = 'TIMESTAMP_PROP'
       const timestampStringValue: string = '2018-12-15 10:10:00+00:00'
-      const timestampPropValue: Date = new Date(timestampStringValue)
+      const timestampPropValue: LocalDateTime = LocalDateTime.parseWithFormat(
+        timestampStringValue,
+        'yyyy-MM-dd HH:mm:ss+00:00',
+      )
 
       const insertPgql: string = `
           INSERT INTO ${TEST_GRAPH_NAME}

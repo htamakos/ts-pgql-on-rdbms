@@ -1,3 +1,4 @@
+import { LocalDateTime } from '../src/core/JavaStandardType'
 import { IParameters } from '../src/parameter'
 import { Pgql } from '../src/pgql'
 import { IRecord } from '../src/record'
@@ -32,7 +33,10 @@ describe('Session', (): void => {
       const booleanPropName: string = 'BOOLEAN_PROP'
       const timestampPropName: string = 'TIMESTAMP_PROP'
       const timestampStringValue: string = '2018-12-15 10:10:00+00:00'
-      const timestampPropValue: Date = new Date(timestampStringValue)
+      const timestampPropValue: LocalDateTime = LocalDateTime.parseWithFormat(
+        timestampStringValue,
+        'yyyy-MM-dd HH:mm:ss+00:00',
+      )
 
       const insertPgql: string = `
       INSERT INTO ${TEST_GRAPH_NAME}
@@ -106,7 +110,9 @@ describe('Session', (): void => {
       expect(record.get(floatPropName)).toBe(floatPropValue)
       expect(record.get(strPropName)).toStrictEqual(strPropValue)
       expect(record.get(booleanPropName)).toBe(booleanPropValue)
-      expect(record.get(timestampPropName)).toStrictEqual(timestampPropValue)
+      expect(record.get(timestampPropName)!.toString()).toStrictEqual(
+        timestampPropValue.toString(),
+      )
     } finally {
       session.rollback()
       session.closeSync()
@@ -132,7 +138,10 @@ describe('Session', (): void => {
       const booleanPropName: string = 'BOOLEAN_PROP'
       const timestampPropName: string = 'TIMESTAMP_PROP'
       const timestampStringValue: string = '2018-12-18 10:10:00+00:00'
-      const timestampPropValue: Date = new Date(timestampStringValue)
+      const timestampPropValue: LocalDateTime = LocalDateTime.parseWithFormat(
+        timestampStringValue,
+        'yyyy-MM-dd HH:mm:ss+00:00',
+      )
 
       const updatePgql: string = `
       UPDATE v SET (
@@ -197,7 +206,9 @@ describe('Session', (): void => {
       expect(record.get(floatPropName)).toBe(floatPropValue)
       expect(record.get(strPropName)).toStrictEqual(strPropValue)
       expect(record.get(booleanPropName)).toBe(booleanPropValue)
-      expect(record.get(timestampPropName)).toStrictEqual(timestampPropValue)
+      expect(record.get(timestampPropName)!.toString()).toStrictEqual(
+        timestampPropValue.toString(),
+      )
 
       const deletePgql: string = `
         DELETE v FROM MATCH (v) ON ${TEST_GRAPH_NAME}

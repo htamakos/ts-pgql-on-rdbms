@@ -1,3 +1,4 @@
+import { LocalDateTime } from '../src/core/JavaStandardType'
 import { PgqlConnection } from '../src/core/PgqlConnection'
 import { PgqlPreparedStatement } from '../src/core/PgqlPreparedStatement'
 import { PgqlResultSet } from '../src/core/PgqlResultSet'
@@ -29,7 +30,7 @@ describe('ParameterHandler', (): void => {
       const doublePropName: string = 'DOUBLE_PROP'
       const booleanPropValue: boolean = false
       const booleanPropName: string = 'BOOLEAN_PROP'
-      const timestampValue: Date = new Date()
+      const timestampValue: LocalDateTime = LocalDateTime.now()
       const timestampPropName: string = 'TIMESTAMP_PROP'
 
       const insertPstmt = await pgqlConn.prepareStatement(`
@@ -111,9 +112,9 @@ describe('ParameterHandler', (): void => {
               expect(rs.getFloat(floatPropName)).toBe(floatPropValue)
               expect(rs.getDouble(doublePropName)).toBe(doublePropValue)
               expect(rs.getBoolean(booleanPropName)).toBe(booleanPropValue)
-              expect(rs.getTimestamp(timestampPropName)).toStrictEqual(
-                timestampValue,
-              )
+              expect(
+                rs.getTimestamp(timestampPropName)!.toString(),
+              ).toStrictEqual(timestampValue.toString())
               isFound = true
             }
 
