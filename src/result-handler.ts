@@ -3,7 +3,7 @@ import { PgqlResultSet } from './core/PgqlResultSet'
 import { PgqlResultSetMetaDataImpl } from './core/PgqlResultSetMetaDataImpl'
 import { IRecord, Record } from './record'
 import { IResult, Result } from './result'
-import { PgqlType } from './types'
+import { PgqlType, PgqlTypeName } from './types'
 import * as utils from './utils'
 
 /**
@@ -49,6 +49,26 @@ export class ResultHanlder implements IResultHanlder {
 
     const columnNames: string[] = this.getColumnNames(meta, columnCount)
     const columnTypes: number[] = this.getColumnTypes(rs, columnCount)
+    const columnTypeNames: PgqlTypeName[] = columnTypes.map((t) => {
+      switch (t) {
+        case PgDatatypeConstants.TYPE_DT_BOOL:
+          return 'boolean'
+        case PgDatatypeConstants.TYPE_DT_DATE:
+          return 'timestamp'
+        case PgDatatypeConstants.TYPE_DT_INTEGER:
+          return 'int'
+        case PgDatatypeConstants.TYPE_DT_LONG:
+          return 'long'
+        case PgDatatypeConstants.TYPE_DT_FLOAT:
+          return 'float'
+        case PgDatatypeConstants.TYPE_DT_DOUBLE:
+          return 'double'
+        case PgDatatypeConstants.TYPE_DT_STRING:
+          return 'string'
+        default:
+          throw new Error(`unkown PGQL types: ${t}`)
+      }
+    })
 
     const records: IRecord[] = []
 
@@ -85,6 +105,6 @@ export class ResultHanlder implements IResultHanlder {
       rs.closeSync()
     }
 
-    return new Result(records)
+    return new Result(records, columnNames, columnTypeNames)
   }
 }

@@ -66,6 +66,27 @@ describe('ResultHandler', (): void => {
         expect(record.get(timestampPropName)!.toString()).toStrictEqual(
           timestampPropValue.toString(),
         )
+
+        expect(result.size()).toBe(1)
+        expect(result.columns()).toStrictEqual([
+          intPropName,
+          longPropName,
+          doublePropName,
+          floatPropName,
+          stringPropName,
+          booleanPropName,
+          timestampPropName,
+        ])
+
+        expect(result.columnTypes()).toStrictEqual([
+          'int',
+          'long',
+          'double',
+          'float',
+          'string',
+          'boolean',
+          'timestamp',
+        ])
       })
     })
   })
