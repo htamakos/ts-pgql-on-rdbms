@@ -106,8 +106,18 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="wrapper_api_private.result.html#_columntypes" class="tsd-kind-icon">_column<wbr>Types</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="wrapper_api_private.result.html#_columns" class="tsd-kind-icon">_columns</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="wrapper_api_private.result.html#_records" class="tsd-kind-icon">_records</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="wrapper_api_private.result.html#records" class="tsd-kind-icon">records</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="wrapper_api_private.result.html#columntypes" class="tsd-kind-icon">column<wbr>Types</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="wrapper_api_private.result.html#columns" class="tsd-kind-icon">columns</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="wrapper_api_private.result.html#size" class="tsd-kind-icon">size</a></li>
 							</ul>
 						</section>
 					</div>
@@ -119,19 +129,25 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Result<span class="tsd-signature-symbol">(</span>_records<span class="tsd-signature-symbol">: </span><a href="../interfaces/index.irecord.html" class="tsd-signature-type" data-tsd-kind="Interface">IRecord</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="wrapper_api_private.result.html" class="tsd-signature-type" data-tsd-kind="Class">Result</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Result<span class="tsd-signature-symbol">(</span>_records<span class="tsd-signature-symbol">: </span><a href="../interfaces/index.irecord.html" class="tsd-signature-type" data-tsd-kind="Interface">IRecord</a><span class="tsd-signature-symbol">[]</span>, columns<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, columnTypes<span class="tsd-signature-symbol">: </span><a href="../modules/index.html#pgqltypename" class="tsd-signature-type" data-tsd-kind="Type alias">PgqlTypeName</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="wrapper_api_private.result.html" class="tsd-signature-type" data-tsd-kind="Class">Result</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/htamakos/ts-pgql-on-rdbms/blob/fb20f3d/src/result.ts#L19">src/result.ts:19</a></li>
+									<li>Defined in <a href="https://github.com/htamakos/ts-pgql-on-rdbms/blob/415efd3/src/result.ts#L25">src/result.ts:25</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>_records: <a href="../interfaces/index.irecord.html" class="tsd-signature-type" data-tsd-kind="Interface">IRecord</a><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+								<li>
+									<h5>columns: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+								<li>
+									<h5>columnTypes: <a href="../modules/index.html#pgqltypename" class="tsd-signature-type" data-tsd-kind="Type alias">PgqlTypeName</a><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="wrapper_api_private.result.html" class="tsd-signature-type" data-tsd-kind="Class">Result</a></h4>
@@ -141,6 +157,26 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="_columntypes" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> _column<wbr>Types</h3>
+					<div class="tsd-signature tsd-kind-icon">_column<wbr>Types<span class="tsd-signature-symbol">:</span> <a href="../modules/index.html#pgqltypename" class="tsd-signature-type" data-tsd-kind="Type alias">PgqlTypeName</a><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/htamakos/ts-pgql-on-rdbms/blob/415efd3/src/result.ts#L25">src/result.ts:25</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="_columns" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> _columns</h3>
+					<div class="tsd-signature tsd-kind-icon">_columns<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/htamakos/ts-pgql-on-rdbms/blob/415efd3/src/result.ts#L24">src/result.ts:24</a></li>
+						</ul>
+					</aside>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="_records" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> _records</h3>
@@ -155,9 +191,66 @@
 					<aside class="tsd-sources">
 						<p>Implementation of <a href="../interfaces/index.iresult.html">IResult</a>.<a href="../interfaces/index.iresult.html#records">records</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/htamakos/ts-pgql-on-rdbms/blob/fb20f3d/src/result.ts#L19">src/result.ts:19</a></li>
+							<li>Defined in <a href="https://github.com/htamakos/ts-pgql-on-rdbms/blob/415efd3/src/result.ts#L23">src/result.ts:23</a></li>
 						</ul>
 					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="columntypes" class="tsd-anchor"></a>
+					<h3>column<wbr>Types</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">column<wbr>Types<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../modules/index.html#pgqltypename" class="tsd-signature-type" data-tsd-kind="Type alias">PgqlTypeName</a><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/index.iresult.html">IResult</a>.<a href="../interfaces/index.iresult.html#columntypes">columnTypes</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/htamakos/ts-pgql-on-rdbms/blob/415efd3/src/result.ts#L45">src/result.ts:45</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <a href="../modules/index.html#pgqltypename" class="tsd-signature-type" data-tsd-kind="Type alias">PgqlTypeName</a><span class="tsd-signature-symbol">[]</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="columns" class="tsd-anchor"></a>
+					<h3>columns</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">columns<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/index.iresult.html">IResult</a>.<a href="../interfaces/index.iresult.html#columns">columns</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/htamakos/ts-pgql-on-rdbms/blob/415efd3/src/result.ts#L41">src/result.ts:41</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="size" class="tsd-anchor"></a>
+					<h3>size</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">size<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/index.iresult.html">IResult</a>.<a href="../interfaces/index.iresult.html#size">size</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/htamakos/ts-pgql-on-rdbms/blob/415efd3/src/result.ts#L37">src/result.ts:37</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+						</li>
+					</ul>
 				</section>
 			</section>
 		</div>
@@ -203,11 +296,26 @@
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
 								<a href="wrapper_api_private.result.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="wrapper_api_private.result.html#_columntypes" class="tsd-kind-icon">_column<wbr>Types</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="wrapper_api_private.result.html#_columns" class="tsd-kind-icon">_columns</a>
+							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="wrapper_api_private.result.html#_records" class="tsd-kind-icon">_records</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="wrapper_api_private.result.html#records" class="tsd-kind-icon">records</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="wrapper_api_private.result.html#columntypes" class="tsd-kind-icon">column<wbr>Types</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="wrapper_api_private.result.html#columns" class="tsd-kind-icon">columns</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="wrapper_api_private.result.html#size" class="tsd-kind-icon">size</a>
 							</li>
 						</ul>
 					</li>
@@ -286,20 +394,24 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
 				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
 				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
-				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
-				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
-			</ul>
-			<ul class="tsd-legend">
 				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
 				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
 			</ul>
 		</div>
 	</div>
