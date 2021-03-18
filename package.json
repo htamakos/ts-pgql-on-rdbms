@@ -10,6 +10,7 @@
     "test": "jest",
     "build": "tsc",
     "doc": "typedoc",
+    "prepare": "npm run build",
     "precommit": "lint-staged",
     "prepublishOnly": "npm run build"
   },
