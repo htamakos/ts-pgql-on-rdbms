@@ -14,6 +14,7 @@ type PgqlTypeName =
   | 'double'
   | 'boolean'
   | 'timestamp'
+  | 'object'
 
 /**
  * TypeScript Type in PGQL

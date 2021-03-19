@@ -6,6 +6,7 @@ import { tryWith } from '../src/core/Resource'
 import { IRecord } from '../src/record'
 import { IResult } from '../src/result'
 import { IResultHanlder, ResultHanlder } from '../src/result-handler'
+import { PgqlType } from '../src/types'
 import { createGraph, dropGraph, executeQueryTest } from './TestHelper'
 
 const TEST_GRAPH_NAME: string = 'TEST_GRAPH_RESULT_HANDLER'
@@ -87,6 +88,33 @@ describe('ResultHandler', (): void => {
           'boolean',
           'timestamp',
         ])
+      })
+    })
+  })
+
+  test('should handle unknown property as null', async () => {
+    await executeQueryTest(async (pgqlConn: PgqlConnection) => {
+      // create sample SELECT PGQL PreparedStatement
+      const unknownPropName: string = 'UNKOWN_PROP'
+      const unknownPropValue: PgqlType = null
+
+      const pstmt: PgqlPreparedStatement = await pgqlConn.prepareStatement(`
+      SELECT
+        n.${unknownPropName}
+      FROM MATCH (n) ON ${TEST_GRAPH_NAME}
+      LIMIT 1
+      `)
+
+      // execute sample PreparedStatement
+      await tryWith(pstmt, async (pstmt: PgqlPreparedStatement) => {
+        const rs: PgqlResultSet = await pstmt.executeQuery()
+        const result: IResult = await resultHandler.handle(rs)
+
+        const record: IRecord = result.records[0]
+        expect(record.get(unknownPropName)).toBe(unknownPropValue)
+        expect(result.size()).toBe(1)
+        expect(result.columns()).toStrictEqual([unknownPropName])
+        expect(result.columnTypes()).toStrictEqual(['object'])
       })
     })
   })

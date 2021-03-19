@@ -44,6 +44,8 @@ export class ParameterHandler implements IParameterHandler {
           case 'timestamp':
             pstmt.setTimestamp(p.index, p.value as LocalDateTime)
             break
+          case 'object':
+            throw new Error('object type is not supported on parameters')
           default:
             throw new Error(`${p.type} is not valid parameter type.`)
         }
