@@ -65,6 +65,8 @@ export class ResultHanlder implements IResultHanlder {
           return 'double'
         case PgDatatypeConstants.TYPE_DT_STRING:
           return 'string'
+        case PgDatatypeConstants.TYPE_DT_EMPTY:
+          return 'object'
         default:
           throw new Error(`unkown PGQL types: ${t}`)
       }
@@ -93,6 +95,8 @@ export class ResultHanlder implements IResultHanlder {
               return rs.getDouble(name)
             case PgDatatypeConstants.TYPE_DT_STRING:
               return rs.getString(name)
+            case PgDatatypeConstants.TYPE_DT_EMPTY:
+              return null
             default:
               throw new Error(`unkown PGQL types: ${t}`)
           }

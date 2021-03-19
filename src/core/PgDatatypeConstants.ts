@@ -11,6 +11,7 @@ interface JavaPgDatatypeConstants {
   TYPE_DT_INTEGER: number
   TYPE_DT_BOOL: number
   TYPE_DT_DATE: number
+  TYPE_DT_EMPTY: number
 }
 
 /**
