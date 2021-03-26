@@ -72,13 +72,11 @@ export class Session implements ISession {
   }
 
   async close(): Promise<void> {
-    await this.executor.close()
-    await this.pgqlConn.getJdbcConnection().close()
+    // noop
   }
 
   closeSync(): void {
-    this.executor.closeSync()
-    this.pgqlConn.getJdbcConnection().closeSync()
+    // noop
   }
 
   /**

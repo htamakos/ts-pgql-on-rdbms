@@ -5,6 +5,8 @@ import {
 } from './core/Oracle'
 import { PgqlConnection } from './core/PgqlConnection'
 import { PgqlError } from './core/PgqlError'
+import { AutoClosable, AutoCloseableSync } from './core/Resource'
+import { LinkedQueue, IQueue } from './queue'
 import { ISession, Session } from './session'
 
 /**
@@ -48,8 +50,9 @@ interface IPgqlDriver {
  *
  * @category wrapper-api
  */
-export class Pgql implements IPgqlDriver {
+export class Pgql implements IPgqlDriver, AutoClosable, AutoCloseableSync {
   private static instance?: Pgql = undefined
+  private readonly _queue: IQueue<Session> = new LinkedQueue()
 
   readonly coreOracleConnectionManager: OracleConnectionManager
 
@@ -82,17 +85,22 @@ export class Pgql implements IPgqlDriver {
   }
 
   async getSession(): Promise<ISession> {
-    // TODO: implements Session cache
-    const conn: OracleConnection = await this.coreOracleConnectionManager
-      .getConnection()
-      .catch((error: Error) => {
-        throw new PgqlError(error.message)
-      })
+    let session: Session | null
 
-    conn.setAutoCommit(false)
+    if ((session = this._queue.poll()) === null) {
+      const conn: OracleConnection = await this.coreOracleConnectionManager
+        .getConnection()
+        .catch((error: Error) => {
+          throw new PgqlError(error.message)
+        })
+      conn.setAutoCommit(false)
+      const pgqlConn: PgqlConnection = PgqlConnection.getConnection(conn)
+      const _session: Session = new Session(pgqlConn)
+      this._queue.offer(_session)
+      return _session
+    }
 
-    const pgqlConn: PgqlConnection = PgqlConnection.getConnection(conn)
-    return new Session(pgqlConn)
+    return session!
   }
 
   /**
@@ -104,5 +112,27 @@ export class Pgql implements IPgqlDriver {
     }
 
     return Pgql.instance
+  }
+
+  async close(): Promise<void> {
+    for (const session of this._queue.values()) {
+      await session.executor.close()
+
+      const conn = session.pgqlConn.getJdbcConnection()
+      if (!conn.isClosed()) {
+        await session.pgqlConn.getJdbcConnection().close()
+      }
+    }
+  }
+
+  closeSync(): void {
+    for (const session of this._queue.values()) {
+      session.executor.closeSync()
+
+      const conn = session.pgqlConn.getJdbcConnection()
+      if (!conn.isClosed()) {
+        session.pgqlConn.getJdbcConnection().closeSync()
+      }
+    }
   }
 }
