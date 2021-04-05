@@ -7,10 +7,10 @@ import { PgqlType, PgqlTypeName } from './types'
  * @category wrapper-api
  */
 export interface IParameter {
-  readonly name: string
+  readonly name?: string
   readonly value: PgqlType
-  readonly index: number
-  readonly type: PgqlTypeName
+  readonly index?: number
+  readonly type?: PgqlTypeName
 }
 
 /**
