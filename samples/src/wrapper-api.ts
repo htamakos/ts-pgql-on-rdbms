@@ -64,7 +64,8 @@ export async function executePgqlByWrapperAPI() {
   // Rollback
   session.rollback()
 
-  await pgql.close()
+  // Close Session
+  await session.close()
 
   console.log(record)
 }

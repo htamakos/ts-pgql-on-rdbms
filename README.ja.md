@@ -345,8 +345,8 @@ export async function executePgqlByWrapperAPI() {
   // Rollback
   session.rollback()
 
-  // Close Pgql Driver
-  await pgql.close()
+  // Close Session
+  await session.close()
 
   console.log(record)
 }
