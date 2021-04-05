@@ -22,37 +22,43 @@ export interface IParameterHandler {
 export class ParameterHandler implements IParameterHandler {
   setParameters(pstmt: PgqlPreparedStatement, parameters?: IParameters): void {
     if (parameters != undefined) {
-      parameters.forEach((p: IParameter) => {
+      let parameterIndex: number = 1
+
+      for (const p of parameters) {
         const t: PgqlTypeName = this.judgePgqlTypeName(p)
+
+        const index: number =
+          p.index !== undefined && p.index !== null ? p.index! : parameterIndex
 
         switch (t) {
           case 'string':
-            pstmt.setString(p.index, p.value as string)
+            pstmt.setString(index, p.value as string)
             break
           case 'int':
-            pstmt.setInt(p.index, p.value as number)
+            pstmt.setInt(index, p.value as number)
             break
           case 'long':
-            pstmt.setLong(p.index, p.value as number)
+            pstmt.setLong(index, p.value as number)
             break
           case 'float':
-            pstmt.setFloat(p.index, p.value as number)
+            pstmt.setFloat(index, p.value as number)
             break
           case 'double':
-            pstmt.setDouble(p.index, p.value as number)
+            pstmt.setDouble(index, p.value as number)
             break
           case 'boolean':
-            pstmt.setBoolean(p.index, p.value as boolean)
+            pstmt.setBoolean(index, p.value as boolean)
             break
           case 'timestamp':
-            pstmt.setTimestamp(p.index, p.value as LocalDateTime)
+            pstmt.setTimestamp(index, p.value as LocalDateTime)
             break
           case 'object':
             throw new Error('object type is not supported on parameters')
           default:
             throw new Error(`${p.type} is not valid parameter type.`)
         }
-      })
+        parameterIndex++
+      }
     }
   }
 
