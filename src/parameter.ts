@@ -10,7 +10,7 @@ export interface IParameter {
   readonly name: string
   readonly value: PgqlType
   readonly index: number
-  readonly type: PgqlTypeName
+  readonly type?: PgqlTypeName
 }
 
 /**

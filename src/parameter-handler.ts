@@ -1,6 +1,7 @@
 import { LocalDateTime } from './core/JavaStandardType'
 import { PgqlPreparedStatement } from './core/PgqlPreparedStatement'
 import { IParameter, IParameters } from './parameter'
+import { PgqlTypeName } from './types'
 
 /**
  * TODO: document comment
@@ -22,7 +23,9 @@ export class ParameterHandler implements IParameterHandler {
   setParameters(pstmt: PgqlPreparedStatement, parameters?: IParameters): void {
     if (parameters != undefined) {
       parameters.forEach((p: IParameter) => {
-        switch (p.type) {
+        const t: PgqlTypeName = this.judgePgqlTypeName(p)
+
+        switch (t) {
           case 'string':
             pstmt.setString(p.index, p.value as string)
             break
@@ -50,6 +53,37 @@ export class ParameterHandler implements IParameterHandler {
             throw new Error(`${p.type} is not valid parameter type.`)
         }
       })
+    }
+  }
+
+  private judgePgqlTypeName(param: IParameter): PgqlTypeName {
+    if (param.type !== undefined) return param.type!
+    if (param.value === null || param.value === undefined) return 'object'
+
+    switch (typeof param.value!) {
+      case 'boolean':
+        return 'boolean'
+      case 'number':
+      case 'bigint':
+        if (
+          !param.value!.toString().includes('.') &&
+          Number.isSafeInteger(param.value)
+        ) {
+          return 'long'
+        } else {
+          return 'double'
+        }
+      case 'string':
+      case 'symbol':
+        return 'string'
+      case 'object':
+        if (param.value instanceof LocalDateTime) {
+          return 'timestamp'
+        } else {
+          return 'object'
+        }
+      default:
+        throw new Error(`${param.type} is not valid parameter type.`)
     }
   }
 }
