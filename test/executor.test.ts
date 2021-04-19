@@ -323,4 +323,77 @@ describe('Executor', (): void => {
       conn.closeSync()
     }
   })
+
+  test('Executor with QueryOptions', async (): Promise<void> => {
+    const conn: OracleConnection = await connManager.getConnection()
+    conn.setAutoCommit(false)
+
+    try {
+      const pgqlConn: PgqlConnection = PgqlConnection.getConnection(conn)
+
+      const reuseExecutor: ReuseExecutor = new ReuseExecutor(pgqlConn)
+      const parameterHandler: IParameterHandler = new ParameterHandler()
+      const resultHandler: IResultHanlder = new ResultHanlder()
+
+      const checkStatement: string = `
+      SELECT
+        id(n) as n_id,
+        n.STR_PROP,
+        n.INT_PROP,
+        n.LONG_PROP as LONG_PROP,
+        cast(n.FLOAT_PROP as float) as FLOAT_PROP,
+        n.DOUBLE_PROP as DOUBLE_PROP,
+        n.BOOLEAN_PROP,
+        n.TIMESTAMP_PROP
+      FROM MATCH (n) ON ${TEST_GRAPH_NAME}
+      WHERE n.STR_PROP != ?
+      LIMIT 1
+      `
+
+      const parameters1: IParameters = [
+        { name: 'STR_PROP', index: 1, value: 'xxxxxxxxxx', type: 'string' },
+      ]
+
+      await reuseExecutor.query(
+        checkStatement,
+        parameterHandler,
+        resultHandler,
+        parameters1,
+        {
+          parallel: 0,
+          dynamicSampling: 2,
+          timeout: 1000,
+          maxResults: -1,
+          queryOptionString: 'USE_GT_TAB=F USE_VD_TAB=F',
+        },
+      )
+
+      const parameters2: IParameters = [
+        { name: 'STR_PROP', index: 1, value: '000000000', type: 'string' },
+      ]
+
+      await reuseExecutor.query(
+        checkStatement,
+        parameterHandler,
+        resultHandler,
+        parameters2,
+      )
+
+      const parameters3: IParameters = [
+        { name: 'STR_PROP', index: 1, value: '11111111', type: 'string' },
+      ]
+
+      await reuseExecutor.query(
+        checkStatement,
+        parameterHandler,
+        resultHandler,
+        parameters3,
+      )
+
+      expect(reuseExecutor.getCacheSize()).toBe(1)
+    } finally {
+      conn.rollback()
+      conn.closeSync()
+    }
+  })
 })

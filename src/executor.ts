@@ -77,7 +77,9 @@ abstract class AbstractExecutor
             options.parallel,
             options.dynamicSampling,
             options.maxResults,
-            '',
+            options.queryOptionString !== undefined
+              ? options.queryOptionString!
+              : '',
           )
           .catch((error: Error) => {
             throw new PgqlError(error.message)
@@ -108,7 +110,6 @@ abstract class AbstractExecutor
     parameters?: IParameters,
     options?: IOptions,
   ): Promise<boolean> {
-    // TODO: implements PreparedStatement cache
     const pstmt: PgqlPreparedStatement = await this.getPreparedStatement(pgql)
 
     try {
@@ -121,7 +122,9 @@ abstract class AbstractExecutor
         .executeWithOptions(
           _options.parallel,
           _options.dynamicSampling,
-          '',
+          _options.queryOptionString !== undefined
+            ? _options.queryOptionString!
+            : '',
           'AUTO_COMMIT=F',
         )
         .catch((error: Error) => {

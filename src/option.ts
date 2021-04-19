@@ -11,6 +11,7 @@ export interface IOptions {
   readonly dynamicSampling: number
   readonly timeout: number
   readonly maxResults: number
+  readonly queryOptionString?: string
 }
 
 /**

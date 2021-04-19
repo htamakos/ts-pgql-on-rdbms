@@ -14,7 +14,7 @@ describe('Session', (): void => {
   beforeAll(async () => await createGraph(TEST_GRAPH_NAME))
   afterAll(async () => await dropGraph(TEST_GRAPH_NAME))
 
-  test('should execute SELECT and INSERT with parameters', async (): Promise<void> => {
+  test.skip('should execute SELECT and INSERT with parameters', async (): Promise<void> => {
     const session: ISession = await pgqlInstance.getSession()
 
     try {
@@ -119,7 +119,7 @@ describe('Session', (): void => {
     }
   })
 
-  test('should execute UPDATE and DELETE PGQL', async (): Promise<void> => {
+  test.skip('should execute UPDATE and DELETE PGQL', async (): Promise<void> => {
     const session: ISession = await pgqlInstance.getSession()
 
     try {
@@ -239,6 +239,123 @@ describe('Session', (): void => {
 
       const cntResult: IResult = await session.query(checkCntPgql, parameters)
       expect(cntResult.records[0].get('CNT')).toBe(0)
+    } finally {
+      session.rollback()
+      session.closeSync()
+    }
+  })
+
+  test('should execute SELECT and INSERT with parameters and options', async (): Promise<void> => {
+    const session: ISession = await pgqlInstance.getSession()
+
+    try {
+      const labelValue: string = 'NEW_LABEL'
+      const strPropValue: string = 'strValue'
+      const strPropName: string = 'STR_PROP'
+      const intPropValue: number = 9999999
+      const intPropName: string = 'INT_PROP'
+      const longPropValue: number = 90
+      const longPropName: string = 'LONG_PROP'
+      const floatPropValue: number = 10
+      const floatPropName: string = 'FLOAT_PROP'
+      const doublePropValue: number = 0.001
+      const doublePropName: string = 'DOUBLE_PROP'
+      const booleanPropValue: boolean = false
+      const booleanPropName: string = 'BOOLEAN_PROP'
+      const timestampPropName: string = 'TIMESTAMP_PROP'
+      const timestampStringValue: string = '2018-12-15 10:10:00+00:00'
+      const timestampPropValue: LocalDateTime = LocalDateTime.parseWithFormat(
+        timestampStringValue,
+        'yyyy-MM-dd HH:mm:ss+00:00',
+      )
+
+      const insertPgql: string = `
+      INSERT INTO ${TEST_GRAPH_NAME}
+        VERTEX v LABELS(${labelValue}) PROPERTIES (
+          v.${strPropName} = ?,
+          v.${intPropName} = CAST(? as integer),
+          v.${longPropName} = ?,
+          v.${floatPropName} = ?,
+          v.${doublePropName} = ?,
+          v.${booleanPropName} = ?,
+          v.${timestampPropName} = ? 
+        )
+      `
+
+      const parameters: IParameters = [
+        { name: strPropName, index: 1, value: strPropValue, type: 'string' },
+        { name: intPropName, index: 2, value: intPropValue, type: 'int' },
+        { name: longPropName, index: 3, value: longPropValue, type: 'long' },
+        { name: floatPropName, index: 4, value: floatPropValue, type: 'float' },
+        {
+          name: doublePropName,
+          index: 5,
+          value: doublePropValue,
+          type: 'double',
+        },
+        {
+          name: booleanPropName,
+          index: 6,
+          value: booleanPropValue,
+          type: 'boolean',
+        },
+        {
+          name: timestampPropName,
+          index: 7,
+          value: timestampPropValue,
+          type: 'timestamp',
+        },
+      ]
+
+      await session.modify(insertPgql, parameters, {
+        parallel: 0,
+        dynamicSampling: 2,
+        timeout: 1000,
+        maxResults: -1,
+        queryOptionString: 'USE_GT_TAB=F USE_VD_TAB=F',
+      })
+      session.commit()
+
+      const checkStatement: string = `
+      SELECT
+        id(n) as n_id,
+        n.STR_PROP,
+        n.INT_PROP,
+        n.LONG_PROP as LONG_PROP,
+        cast(n.FLOAT_PROP as float) as FLOAT_PROP,
+        n.DOUBLE_PROP as DOUBLE_PROP,
+        n.BOOLEAN_PROP,
+        n.TIMESTAMP_PROP
+      FROM MATCH (n:${labelValue}) ON ${TEST_GRAPH_NAME}
+      WHERE n.STR_PROP = ?
+      and n.INT_PROP = ?
+      and n.LONG_PROP = ?
+      and n.FLOAT_PROP = ?
+      and n.DOUBLE_PROP = ?
+      and n.BOOLEAN_PROP = ?
+      and n.TIMESTAMP_PROP = ?
+      LIMIT 1
+      `
+
+      const result: IResult = await session.query(checkStatement, parameters, {
+        parallel: 0,
+        dynamicSampling: 2,
+        timeout: 1000,
+        maxResults: -1,
+        queryOptionString: 'USE_GT_TAB=F USE_VD_TAB=F',
+      })
+      expect(result.records.length).toBe(1)
+
+      const record: IRecord = result.records[0]
+      expect(record.get(intPropName)).toBe(intPropValue)
+      expect(record.get(longPropName)).toBe(longPropValue)
+      expect(record.get(doublePropName)).toBe(doublePropValue)
+      expect(record.get(floatPropName)).toBe(floatPropValue)
+      expect(record.get(strPropName)).toStrictEqual(strPropValue)
+      expect(record.get(booleanPropName)).toBe(booleanPropValue)
+      expect(record.get(timestampPropName)!.toString()).toStrictEqual(
+        timestampPropValue.toString(),
+      )
     } finally {
       session.rollback()
       session.closeSync()
