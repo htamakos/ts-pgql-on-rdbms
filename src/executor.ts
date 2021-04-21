@@ -48,7 +48,7 @@ abstract class AbstractExecutor
   readonly pgqlConn: PgqlConnection
 
   abstract getPreparedStatement(pgql: string): Promise<PgqlPreparedStatement>
-  abstract closePrepareStatement(pstmt: PgqlPreparedStatement): void
+  abstract handlePrepareStatement(pstmt: PgqlPreparedStatement): void
   abstract getCacheSize(): number
 
   constructor(pgqlConn: PgqlConnection) {
@@ -88,14 +88,26 @@ abstract class AbstractExecutor
       try {
         rs.closeSync()
       } catch {}
+
+      try {
+        pstmt.closeSync()
+      } catch {}
       throw error
     }
 
-    if (pstmt !== undefined && pstmt !== null) {
-      this.closePrepareStatement(pstmt)
+    const [result, errorOfResultHandler]: [IResult, Error] = await handle(
+      resultHandler.handle(rs),
+    )
+
+    if (errorOfResultHandler) {
+      throw errorOfResultHandler
     }
 
-    return await resultHandler.handle(rs)
+    if (pstmt !== undefined && pstmt !== null) {
+      this.handlePrepareStatement(pstmt)
+    }
+
+    return result
   }
 
   /**
@@ -123,10 +135,16 @@ abstract class AbstractExecutor
       ),
     )
 
-    if (error) throw error
+    try {
+      pstmt.closeSync()
+    } catch {}
+
+    if (error) {
+      throw error
+    }
 
     if (pstmt !== undefined && pstmt !== null) {
-      this.closePrepareStatement(pstmt)
+      this.handlePrepareStatement(pstmt)
     }
 
     return booleanValue
@@ -148,7 +166,7 @@ export class SimpleExecutor extends AbstractExecutor {
     return this.pgqlConn.prepareStatement(pgql)
   }
 
-  closePrepareStatement(pstmt: PgqlPreparedStatement): void {
+  handlePrepareStatement(pstmt: PgqlPreparedStatement): void {
     pstmt.closeSync()
   }
 
@@ -183,7 +201,7 @@ export class ReuseExecutor extends AbstractExecutor {
     return pstmt
   }
 
-  closePrepareStatement(pstmt: PgqlPreparedStatement) {
+  handlePrepareStatement(pstmt: PgqlPreparedStatement) {
     // Store PreparedStatement to cache due to reuse
     this._cache.set(pstmt.getPgqlStatement(), pstmt)
   }

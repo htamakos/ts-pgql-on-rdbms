@@ -106,7 +106,9 @@ export class ResultHanlder implements IResultHanlder {
         records.push(record)
       }
     } finally {
-      rs.closeSync()
+      try {
+        rs.closeSync()
+      } catch {}
     }
 
     return new Result(records, columnNames, columnTypeNames)
