@@ -65,7 +65,6 @@ abstract class AbstractExecutor
     parameters?: IParameters,
     options?: IOptions,
   ): Promise<IResult> {
-    // TODO: implements PreparedStatement cache
     const pstmt: PgqlPreparedStatement = await this.getPreparedStatement(pgql)
     parameterHandler.setParameters(pstmt, parameters)
 
