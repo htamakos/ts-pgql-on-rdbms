@@ -1,9 +1,9 @@
 import { ICache, SimpleLruCache } from './cache'
 import { PgqlConnection } from './core/PgqlConnection'
-import { PgqlError } from './core/PgqlError'
 import { PgqlPreparedStatement } from './core/PgqlPreparedStatement'
 import { PgqlResultSet } from './core/PgqlResultSet'
 import { AutoClosable, AutoCloseableSync } from './core/Resource'
+import { handle } from './handle'
 import { DEFAULT_OPTIONS, IOptions } from './option'
 import { IParameters } from './parameter'
 import { IParameterHandler } from './parameter-handler'
@@ -67,38 +67,36 @@ abstract class AbstractExecutor
   ): Promise<IResult> {
     // TODO: implements PreparedStatement cache
     const pstmt: PgqlPreparedStatement = await this.getPreparedStatement(pgql)
-    let rs: PgqlResultSet | undefined = undefined
-    try {
-      parameterHandler.setParameters(pstmt, parameters)
-      if (options !== undefined) {
-        rs = await pstmt
-          .executeQueryWithOptions(
-            options.timeout,
-            options.parallel,
-            options.dynamicSampling,
-            options.maxResults,
-            options.queryOptionString !== undefined
-              ? options.queryOptionString!
-              : '',
-          )
-          .catch((error: Error) => {
-            throw new PgqlError(error.message)
-          })
-      } else {
-        rs = await pstmt.executeQuery().catch((error: Error) => {
-          throw new PgqlError(error.message)
-        })
-      }
+    parameterHandler.setParameters(pstmt, parameters)
 
-      return await resultHandler.handle(rs)
-    } finally {
-      if (rs !== undefined && rs !== null) {
-        rs.closeSync()
+    const _executeQuery: () => Promise<PgqlResultSet> = async (): Promise<PgqlResultSet> => {
+      if (options !== undefined) {
+        return pstmt.executeQueryWithOptions(
+          options.timeout,
+          options.parallel,
+          options.dynamicSampling,
+          options.maxResults,
+          options.queryOptionString !== undefined
+            ? options.queryOptionString!
+            : '',
+        )
       }
-      if (pstmt !== undefined && pstmt !== null) {
-        this.closePrepareStatement(pstmt)
-      }
+      return pstmt.executeQuery()
     }
+
+    const [rs, error]: [PgqlResultSet, Error] = await handle(_executeQuery())
+    if (error) {
+      try {
+        rs.closeSync()
+      } catch {}
+      throw error
+    }
+
+    if (pstmt !== undefined && pstmt !== null) {
+      this.closePrepareStatement(pstmt)
+    }
+
+    return await resultHandler.handle(rs)
   }
 
   /**
@@ -111,30 +109,28 @@ abstract class AbstractExecutor
     options?: IOptions,
   ): Promise<boolean> {
     const pstmt: PgqlPreparedStatement = await this.getPreparedStatement(pgql)
+    parameterHandler.setParameters(pstmt, parameters)
+    const _options: IOptions =
+      options !== undefined ? options! : DEFAULT_OPTIONS
 
-    try {
-      parameterHandler.setParameters(pstmt, parameters)
+    const [booleanValue, error]: [boolean, Error] = await handle(
+      pstmt.executeWithOptions(
+        _options.parallel,
+        _options.dynamicSampling,
+        _options.queryOptionString !== undefined
+          ? _options.queryOptionString!
+          : '',
+        'AUTO_COMMIT=F',
+      ),
+    )
 
-      const _options: IOptions =
-        options !== undefined ? options! : DEFAULT_OPTIONS
+    if (error) throw error
 
-      return await pstmt
-        .executeWithOptions(
-          _options.parallel,
-          _options.dynamicSampling,
-          _options.queryOptionString !== undefined
-            ? _options.queryOptionString!
-            : '',
-          'AUTO_COMMIT=F',
-        )
-        .catch((error: Error) => {
-          throw new PgqlError(error.message)
-        })
-    } finally {
-      if (pstmt !== undefined && pstmt !== null) {
-        this.closePrepareStatement(pstmt)
-      }
+    if (pstmt !== undefined && pstmt !== null) {
+      this.closePrepareStatement(pstmt)
     }
+
+    return booleanValue
   }
 
   abstract close(): Promise<void>
