@@ -222,7 +222,7 @@ PGQL:
   }
 
   setLong(parameterIndex: number, x: number): void {
-    this.internalObj.setLongSync(parameterIndex, x)
+    this.internalObj.setLongSync(parameterIndex, javaNodeApi.newLong(x))
   }
 
   setString(parameterIndex: number, x: string): void {

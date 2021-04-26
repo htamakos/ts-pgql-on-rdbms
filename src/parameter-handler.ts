@@ -73,7 +73,7 @@ export class ParameterHandler implements IParameterHandler {
       case 'bigint':
         if (
           !param.value!.toString().includes('.') &&
-          Number.isSafeInteger(param.value)
+          Number.isInteger(param.value)
         ) {
           return 'long'
         } else {
