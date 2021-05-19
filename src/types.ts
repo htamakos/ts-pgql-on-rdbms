@@ -10,6 +10,7 @@ type PgqlTypeName =
   | 'string'
   | 'int'
   | 'long'
+  | 'BigInt'
   | 'float'
   | 'double'
   | 'boolean'
@@ -21,6 +22,6 @@ type PgqlTypeName =
  *
  * @category wrapper-api
  */
-type PgqlType = string | number | boolean | LocalDateTime | null
+type PgqlType = string | number | BigInt | boolean | LocalDateTime | null
 
 export { PgqlTypeName, PgqlType }

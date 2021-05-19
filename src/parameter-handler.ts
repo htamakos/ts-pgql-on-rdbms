@@ -38,7 +38,7 @@ export class ParameterHandler implements IParameterHandler {
             pstmt.setInt(index, p.value as number)
             break
           case 'long':
-            pstmt.setLong(index, p.value as number)
+            pstmt.setLong(index, p.value as BigInt)
             break
           case 'float':
             pstmt.setFloat(index, p.value as number)
@@ -70,7 +70,6 @@ export class ParameterHandler implements IParameterHandler {
       case 'boolean':
         return 'boolean'
       case 'number':
-      case 'bigint':
         if (
           !param.value!.toString().includes('.') &&
           Number.isInteger(param.value)
@@ -79,6 +78,8 @@ export class ParameterHandler implements IParameterHandler {
         } else {
           return 'double'
         }
+      case 'bigint':
+        return 'long'
       case 'string':
       case 'symbol':
         return 'string'

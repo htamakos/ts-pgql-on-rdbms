@@ -23,7 +23,7 @@ describe('ResultHandler', (): void => {
       const intPropName: string = 'INT_VALUE'
       const intPropValue: number = 1
       const longPropName: string = 'LONG_VALUE'
-      const longPropValue: number = 2
+      const longPropValue: BigInt = BigInt(2)
       const doublePropName: string = 'DOUBLE_VALUE'
       const doublePropValue: number = 0.1
       const floatPropName: string = 'FLOAT_VALUE'
@@ -42,7 +42,7 @@ describe('ResultHandler', (): void => {
       const pstmt: PgqlPreparedStatement = await pgqlConn.prepareStatement(`
       SELECT
           cast(${intPropValue} as int) as ${intPropName},
-          cast(${longPropValue} as long) as ${longPropName},
+          cast(${longPropValue.toString()} as long) as ${longPropName},
           ${doublePropValue} as ${doublePropName},
           cast(${floatPropValue} as float) as ${floatPropName},
           '${stringPropValue}' as ${stringPropName},
