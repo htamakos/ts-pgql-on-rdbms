@@ -19,7 +19,7 @@ export interface JavaPgqlResultSet extends AutoClosable, AutoCloseableSync {
   nextSync(): boolean
   beforeFirstSync(): boolean
 
-  getLongSync(columnName: string): number
+  getLongSync(columnName: string): BigInt
   getDoubleSync(columnName: string): number
   getFloatSync(columnName: string): number
   getStringSync(columnName: string): string
@@ -67,11 +67,11 @@ export class PgqlResultSet implements AutoClosable, AutoCloseableSync {
     return this.internalObj.beforeFirstSync()
   }
 
-  getLong(columnName: string): number | null {
-    const value: number | null = this.internalObj.getLongSync(columnName)
+  getLong(columnName: string): BigInt | null {
+    const value: any | null = this.internalObj.getLongSync(columnName)
 
     if (value != null && value != undefined) {
-      return value.valueOf()
+      return BigInt(value.longValue)
     } else {
       return null
     }

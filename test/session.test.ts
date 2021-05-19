@@ -14,7 +14,7 @@ describe('Session', (): void => {
   beforeAll(async () => await createGraph(TEST_GRAPH_NAME))
   afterAll(async () => await dropGraph(TEST_GRAPH_NAME))
 
-  test.skip('should execute SELECT and INSERT with parameters', async (): Promise<void> => {
+  test('should execute SELECT and INSERT with parameters', async (): Promise<void> => {
     const session: ISession = await pgqlInstance.getSession()
 
     try {
@@ -23,7 +23,7 @@ describe('Session', (): void => {
       const strPropName: string = 'STR_PROP'
       const intPropValue: number = 9999999
       const intPropName: string = 'INT_PROP'
-      const longPropValue: number = 90
+      const longPropValue: BigInt = BigInt(90)
       const longPropName: string = 'LONG_PROP'
       const floatPropValue: number = 10
       const floatPropName: string = 'FLOAT_PROP'
@@ -119,7 +119,7 @@ describe('Session', (): void => {
     }
   })
 
-  test.skip('should execute UPDATE and DELETE PGQL', async (): Promise<void> => {
+  test('should execute UPDATE and DELETE PGQL', async (): Promise<void> => {
     const session: ISession = await pgqlInstance.getSession()
 
     try {
@@ -128,7 +128,7 @@ describe('Session', (): void => {
       const strPropName: string = 'STR_PROP'
       const intPropValue: number = 98989
       const intPropName: string = 'INT_PROP'
-      const longPropValue: number = 1900000
+      const longPropValue: BigInt = BigInt(1900000)
       const longPropName: string = 'LONG_PROP'
       const floatPropValue: number = 180
       const floatPropName: string = 'FLOAT_PROP'
@@ -238,7 +238,7 @@ describe('Session', (): void => {
       `
 
       const cntResult: IResult = await session.query(checkCntPgql, parameters)
-      expect(cntResult.records[0].get('CNT')).toBe(0)
+      expect(cntResult.records[0].get('CNT')).toBe(BigInt(0))
     } finally {
       session.rollback()
       session.closeSync()
@@ -254,7 +254,7 @@ describe('Session', (): void => {
       const strPropName: string = 'STR_PROP'
       const intPropValue: number = 9999999
       const intPropName: string = 'INT_PROP'
-      const longPropValue: number = 90
+      const longPropValue: BigInt = BigInt(90)
       const longPropName: string = 'LONG_PROP'
       const floatPropValue: number = 10
       const floatPropName: string = 'FLOAT_PROP'

@@ -44,7 +44,7 @@ export interface JavaPgqlPreparedStatement
   setDoubleSync(parameterIndex: number, x: number): void
   setFloatSync(parameterIndex: number, x: number): void
   setIntSync(parameterIndex: number, x: number): void
-  setLongSync(parameterIndex: number, x: number): void
+  setLongSync(parameterIndex: number, x: BigInt): void
   setStringSync(parameterIndex: number, x: string): void
   setTimestampSync(parameterIndex: number, x: LocalDateTime): void
 }
@@ -221,8 +221,15 @@ PGQL:
     this.internalObj.setIntSync(parameterIndex, x)
   }
 
-  setLong(parameterIndex: number, x: number): void {
-    this.internalObj.setLongSync(parameterIndex, javaNodeApi.newLong(x))
+  setLong(parameterIndex: number, x: BigInt): void {
+    this.internalObj.setLongSync(
+      parameterIndex,
+      javaNodeApi.callStaticMethodSync(
+        'java.lang.Long',
+        'parseLong',
+        x.toString(),
+      ),
+    )
   }
 
   setString(parameterIndex: number, x: string): void {
